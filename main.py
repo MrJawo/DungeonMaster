@@ -19,7 +19,6 @@ def print_board(game_board):
 
 
 def place_hero(coordinates, game_board):
-    print(coordinates)
     game_board[coordinates[0]][coordinates[1]] = "[x]"
     return game_board
 
@@ -35,8 +34,8 @@ def start_position(choice, grid_size):
         start_coordinates = (grid_size-1, 0)
     elif choice == "4":
         start_coordinates = (grid_size-1, grid_size -1)
-
     return start_coordinates
+
 
 
 def choose_corner(game_board):
@@ -130,4 +129,5 @@ if __name__ == '__main__':
 
     while True:
         main_menu()
+        input()
         break
