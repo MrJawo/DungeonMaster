@@ -68,22 +68,38 @@ class TestCases(unittest.TestCase):
 
         expected_result1 = [['[x]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
                            ['[ ]', '[ ]', '[ ]', '[ ]']]
-        expected_result2 = [['[ ]', '[ ]', '[ ]', '[x]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
-                           ['[ ]', '[ ]', '[ ]', '[ ]']]
-        expected_result3 = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
-                           ['[x]', '[ ]', '[ ]', '[ ]']]
-        expected_result4 = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
-                           ['[ ]', '[ ]', '[ ]', '[ ]']]
+
+        board = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
+                 ['[ ]', '[ ]', '[ ]', '[ ]']]
 
         actual_result1 = main.place_hero(coordinates1, board)
-        actual_result2 = main.place_hero(coordinates2, board)
-        actual_result3 = main.place_hero(coordinates3, board)
-        actual_result4 = main.place_hero(coordinates4, board)
-
         self.assertEqual(expected_result1, actual_result1)
+
+        expected_result2 = [['[ ]', '[ ]', '[ ]', '[x]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
+                           ['[ ]', '[ ]', '[ ]', '[ ]']]
+
+        board = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
+                 ['[ ]', '[ ]', '[ ]', '[ ]']]
+
+        actual_result2 = main.place_hero(coordinates2, board)
         self.assertEqual(expected_result2, actual_result2)
+
+        expected_result3 = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
+                           ['[x]', '[ ]', '[ ]', '[ ]']]
+
+        board = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
+                 ['[ ]', '[ ]', '[ ]', '[ ]']]
+        actual_result3 = main.place_hero(coordinates3, board)
         self.assertEqual(expected_result3, actual_result3)
+
+        expected_result4 = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
+                           ['[ ]', '[ ]', '[ ]', '[x]']]
+
+        board = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
+                 ['[ ]', '[ ]', '[ ]', '[ ]']]
+        actual_result4 = main.place_hero(coordinates4, board)
         self.assertEqual(expected_result4, actual_result4)
+
 
 def place_hero(coordinates, game_board):
     print(coordinates)
