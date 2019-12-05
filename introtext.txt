@@ -1,0 +1,28 @@
+
+
+Du kommer nu få välja vilken spelkaraktär du vill ha.
+Karaktärerna har olika attributvärden och varsin specialförmåga som påverkar din karaktär i strider.
+Attributena är initiativ, tålighet, attack och smidighet.
+Värdena är mellan 1-9 där 1 är sämsta värdet och 9 är det högsta.
+
+Här är dina val:
+_____________________________________________________________________
+1. RIDDAREN
+	Initiativ: 5	Tålighet 9	Attack: 6	Smidighet: 4
+
+Specialförmåga: Sköldblock. Riddaren blockerar alltid första attacken
+per strid med sin sköld, och behöver därför varken undvika eller ta
+någon skada.
+_____________________________________________________________________
+2. TROLLKARLEN
+	Initiativ: 6	Tålighet: 4	Attack: 9	Smidighet: 5
+
+Specialförmåga: Ljussken. Trollkarlen kan göra monster blinda och har
+därför alltid 80% chans att fly från strider.
+_____________________________________________________________________
+3. TJUVEN
+	Initiativ: 7	Tålighet: 5	Attack: 5	Smidighet: 7
+
+Specialförmåga: Kritisk träff. Tjuven har 25% chans att göra dubbel 
+skada varje gång tjuven attackerar.
+_____________________________________________________________________
