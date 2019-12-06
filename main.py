@@ -108,7 +108,6 @@ def main_menu_choice(menu_choice):
         exit()
 
 
-
 def main_menu():
     while True:
         print("\n[1] - Nytt spel\n"
