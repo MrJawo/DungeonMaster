@@ -1,5 +1,6 @@
 import unittest
 import main
+import game_functions
 
 class TestCases(unittest.TestCase):
     def test_make_board(self):
@@ -101,10 +102,25 @@ class TestCases(unittest.TestCase):
         self.assertEqual(expected_result4, actual_result4)
 
 
-def place_hero(coordinates, game_board):
-    print(coordinates)
-    game_board[coordinates[0]][coordinates[1]] = "[x]"
-    return game_board
+    def test_generate_treasure(self):
+        chance = 40
+        treasure_type = 'Lösa slantar: 2'
+        treasure_value = 2
+
+        expected_result_1 = 2
+        expected_result_2 = 0
+        actual_result_1 = game_functions.generate_treasure(chance, treasure_type, treasure_value, 15)
+        actual_result_2 = game_functions.generate_treasure(chance, treasure_type, treasure_value, 50)
+
+        self.assertEqual(expected_result_1, actual_result_1)
+        self.assertEqual(expected_result_2, actual_result_2)
+
+    def test_treasure_sum(self):
+
+        test_list = [1, 2, 3]
+        expected_result = 6
+        actual_result = game_functions.treasure_sum(test_list)
+        self.assertEqual(expected_result, actual_result)
 
 if __name__ == '__main__':
     unittest.main()
