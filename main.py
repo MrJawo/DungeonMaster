@@ -37,7 +37,6 @@ def start_position(choice, grid_size):
     return start_coordinates
 
 
-
 def choose_corner(game_board):
     while True:
         print_board(game_board)
@@ -102,11 +101,13 @@ def main_menu_choice(menu_choice):
         start_coordinates = start_position(start_corner, grid_size)
         place_hero(start_coordinates, game_board)
         print_board(game_board)
+
+
+
     elif menu_choice == "2":
         pass
     elif menu_choice == "3":
         exit()
-
 
 
 def main_menu():
@@ -125,6 +126,9 @@ def main_menu():
 if __name__ == '__main__':
 
     hero_list = []
+    monster_list = []
+    treasure_list = []
+
     print("\nVälkommen till Dungeon Run!")
 
     while True:
