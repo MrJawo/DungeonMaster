@@ -122,5 +122,15 @@ class TestCases(unittest.TestCase):
         actual_result = game_functions.treasure_sum(test_list)
         self.assertEqual(expected_result, actual_result)
 
+
+    def test_clean_list(self):
+
+        test_list = [0, 0, (1,2), 0, (1,2)]
+        expected_result = [(1,2), (1,2)]
+        actual_result = game_functions.clean_list(test_list)
+        self.assertEqual(expected_result,actual_result)
+
+
 if __name__ == '__main__':
+
     unittest.main()
