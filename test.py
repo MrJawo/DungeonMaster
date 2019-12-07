@@ -1,6 +1,7 @@
 import unittest
 import main
 import game_functions
+import classes
 
 class TestCases(unittest.TestCase):
     def test_make_board(self):
@@ -47,10 +48,13 @@ class TestCases(unittest.TestCase):
         expected_result3 = (grid_size-1, 0)
         expected_result4 = (grid_size-1, grid_size -1)
 
-        actual_result1 = main.start_position(choice1, grid_size)
-        actual_result2 = main.start_position(choice2, grid_size)
-        actual_result3 = main.start_position(choice3, grid_size)
-        actual_result4 = main.start_position(choice4, grid_size)
+        room = classes.Rooms()
+        room_list = [room]
+
+        actual_result1 = main.start_position(choice1, grid_size, room_list)
+        actual_result2 = main.start_position(choice2, grid_size, room_list)
+        actual_result3 = main.start_position(choice3, grid_size, room_list)
+        actual_result4 = main.start_position(choice4, grid_size, room_list)
 
         self.assertEqual(expected_result1, actual_result1)
         self.assertEqual(expected_result2, actual_result2)
@@ -106,7 +110,7 @@ class TestCases(unittest.TestCase):
         treasure_type = ''
         treasure_value = 2
 
-        expected_result_1 = 2
+        expected_result_1 = ('',2)
         expected_result_2 = 0
         actual_result_1 = game_functions.generate_treasure(chance, treasure_type, treasure_value, 15)
         actual_result_2 = game_functions.generate_treasure(chance, treasure_type, treasure_value, 50)
@@ -168,7 +172,7 @@ class TestCases(unittest.TestCase):
 
     def test_knight_initiation(self):
 
-        test_character = game_functions.Heroes('Orvar', 'Knight')
+        test_character = classes.Heroes('Orvar', 'Knight')
         expected_result = 0
         self.assertEqual(expected_result, test_character.initiative)
         self.assertFalse(test_character.special_ability)
@@ -185,7 +189,7 @@ class TestCases(unittest.TestCase):
         self.assertTrue(test_character.special_ability)
 
     def test_thief_initiation(self):
-        test_character = game_functions.Heroes('Orvar', 'Thief')
+        test_character = classes.Heroes('Orvar', 'Thief')
         expected_result = 0
         self.assertEqual(expected_result, test_character.initiative)
 
@@ -200,7 +204,7 @@ class TestCases(unittest.TestCase):
         self.assertEqual(expected_result_4, test_character.agility)
 
     def test_wizard_initiation(self):
-        test_character = game_functions.Heroes('Orvar', 'Wizard')
+        test_character = classes.Heroes('Orvar', 'Wizard')
         expected_result = 0
         self.assertEqual(expected_result, test_character.initiative)
 
@@ -215,7 +219,7 @@ class TestCases(unittest.TestCase):
         self.assertEqual(expected_result_4, test_character.agility)
 
     def test_spider_initiation(self):
-        test_character = game_functions.Creatures()
+        test_character = classes.Creatures()
         expected_result = 0
         self.assertEqual(expected_result, test_character.initiative)
 
@@ -230,7 +234,7 @@ class TestCases(unittest.TestCase):
         self.assertEqual(expected_result_4, test_character.agility)
 
     def test_skeleton_initiation(self):
-        test_character = game_functions.Creatures()
+        test_character = classes.Creatures()
         expected_result = 0
         self.assertEqual(expected_result, test_character.initiative)
 
@@ -245,7 +249,7 @@ class TestCases(unittest.TestCase):
         self.assertEqual(expected_result_4, test_character.agility)
 
     def test_orc_initiation(self):
-        test_character = game_functions.Creatures()
+        test_character = classes.Creatures()
         expected_result = 0
         self.assertEqual(expected_result, test_character.initiative)
 
@@ -260,7 +264,7 @@ class TestCases(unittest.TestCase):
         self.assertEqual(expected_result_4, test_character.agility)
 
     def test_troll_initiation(self):
-        test_character = game_functions.Creatures()
+        test_character = classes.Creatures()
         expected_result = 0
         self.assertEqual(expected_result, test_character.initiative)
 
@@ -276,17 +280,22 @@ class TestCases(unittest.TestCase):
 
     def test_throw_initiative_dice(self):
 
-        test_character = game_functions.Heroes('Orvar', 'Knight')
+        test_character = classes.Heroes('Orvar', 'Knight')
         test_character.knight_initiation()
         self.assertEqual(test_character.initiative_dice_sum, 0)
 
         test_character.throw_initiative_dice()
-        expected_result = [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
+
+        i = 5
+        expected_result = []
+        for number in range(25):
+            expected_result.append(i)
+            i += 1
         self.assertIn(test_character.initiative_dice_sum, expected_result)
 
     def test_lost_health_point(self):
 
-        test_character = game_functions.Heroes('Orvar', 'Knight')
+        test_character = classes.Heroes('Orvar', 'Knight')
         test_character.knight_initiation()
         self.assertEqual(test_character.resistance, 9)
 
@@ -295,7 +304,7 @@ class TestCases(unittest.TestCase):
 
     def test_update_player_coordinates(self):
 
-        test_character = game_functions.Heroes('Orvar', 'Knight')
+        test_character = classes.Heroes('Orvar', 'Knight')
 
         first_position = [['[ ]', '[ ]', '[ ]', '[x]'], ['[ ]', '[ ]', '[ ]', '[ ]']]
         second_position = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[x]']]
@@ -309,6 +318,56 @@ class TestCases(unittest.TestCase):
         self.assertEqual(expected_coordinate_2, test_character.coordinates)
         test_character.update_player_coordinates(second_position)
         self.assertEqual(expected_coordinate_3, test_character.coordinates)
+
+    def test_set_room_symbol(self):
+
+        test_room = classes.Rooms()
+
+        expected_result = "[ ]"
+        self.assertEqual(expected_result, test_room.symbol)
+        test_room.set_room_symbol()
+        expected_result = "[.]"
+        self.assertEqual(expected_result, test_room.symbol)
+
+    def test_set_start_room_symbol(self):
+
+        test_room = classes.Rooms()
+
+        expected_result = "[ ]"
+        self.assertEqual(expected_result, test_room.symbol)
+        test_room.set_start_room_symbol()
+        expected_result = "[O]"
+        self.assertEqual(expected_result, test_room.symbol)
+
+    def test_remove_dead_monsters(self):
+
+        monster_1 = classes.Creatures()
+        monster_1.spider_initiation()
+        monster_1.resistance = 0
+        monster_2 = classes.Creatures()
+        monster_2.spider_initiation()
+        monster_2.resistance = 1
+        room = classes.Rooms()
+        room.monster_list = [monster_1, monster_2]
+
+        room.remove_dead_monsters()
+        expected_result = [monster_2]
+        self.assertEqual(expected_result, room.monster_list)
+
+    def test_heal_remaining_monster(self):
+
+        monster_1 = classes.Creatures()
+        monster_1.skeleton_initiation()
+        monster_1.resistance = 1
+        room = classes.Rooms()
+        room.monster_list = [monster_1]
+
+        room.heal_remaining_monster()
+        expected_result = 2
+        monster_1 = room.monster_list[0]
+        actual_result = monster_1.resistance
+        self.assertEqual(expected_result, actual_result)
+
 
 
 if __name__ == '__main__':

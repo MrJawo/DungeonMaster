@@ -1,4 +1,6 @@
 import knight_class
+from classes import Heroes, Creatures, Rooms
+import game_functions
 
 
 def character_name():
@@ -23,11 +25,22 @@ def place_hero(coordinates, game_board):
     return game_board
 
 
-def start_position(choice, grid_size):
-    start_coordinates = ""
+def get_selected_room(start_coordinates, room_list):
+    for room in room_list:
+        if room.coordinates == start_coordinates:
+            room.set_start_room_symbol()
+            room.exit = True
+            room.monster_list = []
+            room.treasure_list = []
+
+
+def start_position(choice, grid_size, room_list):
+
+    start_coordinates = (0,0)
 
     if choice == "1":
         start_coordinates = (0, 0)
+        get_selected_room(start_coordinates, room_list)
     elif choice == "2":
         start_coordinates = (0, grid_size-1)
     elif choice == "3":
@@ -79,30 +92,49 @@ def choose_character(name):
 
         character_choice = input("\nVälj karaktär: ")
         if character_choice == "1":
-            knight_class.add_knight(hero_list, name)
-            break
+            hero = Heroes(name, "Knight")
+            hero.knight_initiation()
+            return hero
         elif character_choice == "2":
-            pass
+            hero = Heroes(name, "Thief")
+            hero.thief_initiation()
+            return hero
         elif character_choice == "3":
-            pass
+            hero = Heroes(name, "Wizard")
+            hero.wizard_initiation()
+            return hero
         else:
             print("\n-- Felaktig input, ange en siffra från menyn. --")
+
+
+def create_rooms(grid_size):
+
+    room_list = []
+
+    for i in range(grid_size):
+        for j in range(grid_size):
+            room = Rooms()
+            room.coordinates = (i, j)
+            room.generate_room_content()
+            room_list.append(room)
+    return room_list
 
 
 def main_menu_choice(menu_choice):
     if menu_choice == "1":
         name = character_name()
         new_game_text()
-        choose_character(name)
+        hero = choose_character(name)
         size_choice = board_size_choice()
         grid_size = get_grid_size(size_choice)
         game_board = make_board(grid_size)
+        room_list = create_rooms(grid_size)
         start_corner = choose_corner(game_board)
-        start_coordinates = start_position(start_corner, grid_size)
+        start_coordinates = start_position(start_corner, grid_size, room_list)
         place_hero(start_coordinates, game_board)
         print_board(game_board)
 
-
+        # TODO Move loop
 
     elif menu_choice == "2":
         pass

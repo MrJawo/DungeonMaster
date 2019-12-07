@@ -1,4 +1,5 @@
 import random
+import classes
 
 
 def number_sum(int_list):
@@ -12,11 +13,11 @@ def number_sum(int_list):
 
 
 def generate_treasure(chance, treasure_type, treasure_value, random_int):
-    """Returns the value of a treasure based on it's probability of spawning"""
+    """Returns the a tupl of treasure type and its value if it spawns"""
 
     if random_int <= chance:
-        print(treasure_type)
-        return treasure_value
+        treasure_tuple = (treasure_type, treasure_value)
+        return treasure_tuple
     else:
         return 0
 
@@ -24,16 +25,14 @@ def generate_treasure(chance, treasure_type, treasure_value, random_int):
 def get_treasures():
     """Returns an int with sum of all found treasures"""
 
-    print('\nHittade skatter:')
     treasure_list = [generate_treasure(40, 'Lösa slantar: 2', 2, random.randint(1, 100)),
-                generate_treasure(20, 'Pengapung: 6', 6, random.randint(1, 100)),
-                generate_treasure(15, 'Gukdsmycke: 10', 10, random.randint(1, 100)),
-                generate_treasure(10, 'Ädelsten: 14', 14, random.randint(1, 100)),
-                generate_treasure(5, 'Liten skattkista: 20', 20, random.randint(1, 100))]
+                     generate_treasure(20, 'Pengapung: 6', 6, random.randint(1, 100)),
+                     generate_treasure(15, 'Gukdsmycke: 10', 10, random.randint(1, 100)),
+                     generate_treasure(10, 'Ädelsten: 14', 14, random.randint(1, 100)),
+                     generate_treasure(5, 'Liten skattkista: 20', 20, random.randint(1, 100))]
 
-    sum = number_sum(treasure_list)
-    print(f'\nSumman av hittade skatter: {sum}')
-    return sum
+    treasure_list = clean_list(treasure_list)
+    return treasure_list
 
 
 def generate_monster(chance, monster_type, random_int):
@@ -41,34 +40,30 @@ def generate_monster(chance, monster_type, random_int):
 
     if random_int <= chance:
         if monster_type == "Jättespindel":
-            monster = Creatures()
+            monster = classes.Creatures()
             monster.spider_initiation()
-            print(f"\n{monster_type} spawned!")
             return monster
         elif monster_type == "Skelett":
-            monster = Creatures()
+            monster = classes.Creatures()
             monster.skeleton_initiation()
-            print(f"\n{monster_type} spawned!")
             return monster
         elif monster_type == "Orc":
-            monster = Creatures()
+            monster = classes.Creatures()
             monster.orc_initiation()
-            print(f"\n{monster_type} spawned!")
             return monster
         elif monster_type == "Troll":
-            monster = Creatures()
+            monster = classes.Creatures()
             monster.troll_initiation()
-            print(f"\n{monster_type} spawned!")
             return monster
     else:
         return 0
 
 
-def clean_list(monster_list):
+def clean_list(element_list):
     """Returns a list stripped of zeros"""
 
     cleansed_list = []
-    for element in monster_list:
+    for element in element_list:
         if element != 0:
             cleansed_list.append(element)
     return cleansed_list
@@ -183,7 +178,7 @@ def menu_choice_flee(hero):
     if hero.hero_class == "Wizard":
         escape_chance = 80
         print('\nDu använder ljussken och får 80% chans att lyckas fly.')
-    random_number = random.randint(1,100)
+    random_number = random.randint(1, 100)
     if escape_chance >= random_number:
         # TODO Escape scenario
         pass
@@ -256,7 +251,7 @@ def enter_room_event(hero, game_board, start_coordinates):
             else:
                 print("\n Inga skatter hittades i rummet.")
 
-    # TODO Implement exit function
+        # TODO Implement exit function
         if coordinates == start_coordinates:
             # If character stands on start position
             pass
@@ -264,112 +259,3 @@ def enter_room_event(hero, game_board, start_coordinates):
         if coordinates == hero.start_coordinates:
             # If character stands on start position
             pass
-
-
-class Creatures:
-    def __init__(self):
-
-        self.name = ""
-        self.initiative = 0
-        self.initiative_dice_sum = 0
-        self.resistance = 0
-        self.attack = 0
-        self.agility = 0
-        self.special_ability = False
-
-    def knight_initiation(self):
-        """Updates hero attributes to knight"""
-
-        self.initiative = 5
-        self.resistance = 9
-        self.attack = 6
-        self.agility = 4
-        self.special_ability = True
-
-    def wizard_initiation(self):
-        """Updates hero attributes to wizard"""
-
-        self.initiative = 6
-        self.resistance = 4
-        self.attack = 9
-        self.agility = 5
-
-    def thief_initiation(self):
-        """Updates hero attributes to thief"""
-
-        self.initiative = 7
-        self.resistance = 5
-        self.attack = 5
-        self.agility = 7
-
-    def spider_initiation(self):
-        """Updates creature attributes to spider"""
-
-        self.name = "Spider"
-        self.initiative = 7
-        self.resistance = 1
-        self.attack = 2
-        self.agility = 3
-
-    def skeleton_initiation(self):
-        """Updates creature attributes to skeleton"""
-
-        self.name = "Skeleton"
-        self.initiative = 4
-        self.resistance = 2
-        self.attack = 3
-        self.agility = 3
-
-    def orc_initiation(self):
-        """Updates creature attributes to orc"""
-
-        self.name = "Orc"
-        self.initiative = 6
-        self.resistance = 3
-        self.attack = 4
-        self.agility = 4
-
-    def troll_initiation(self):
-        """Updates creature attributes to troll"""
-
-        self.name = "Troll"
-        self.initiative = 2
-        self.resistance = 4
-        self.attack = 7
-        self.agility = 2
-
-    def throw_initiative_dice(self):
-        """Updates the initiative dice sum in the beginning of every fight"""
-
-        dice_list = []
-        for i in range(self.initiative):
-            dice_list.append(random.randint(1, 6))
-        dice_sum = number_sum(dice_list)
-
-        self.initiative_dice_sum = dice_sum
-
-    def lost_health_point(self):
-        """Take of one resistance point """
-
-        self.resistance -= 1
-
-
-class Heroes(Creatures):
-    def __init__(self, name, hero_class):
-        super().__init__()
-
-        self.name = name
-        self.hero_class = hero_class
-        self.total_treasure = 0
-        self.map_treasure = 0
-        self.coordinates = (0,0)
-        self.start_coordinates = (0,0)
-
-    def update_player_coordinates(self, game_board):
-        """Updates and hold the players position on board"""
-
-        for row in game_board:
-            for position in row:
-                if position == "[x]":
-                    self.coordinates = (game_board.index(row), row.index(position))
-
