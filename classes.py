@@ -103,13 +103,11 @@ class Heroes(Creatures):
         self.start_coordinates = (0,0)
         self.special_ability = False
 
-    def update_player_coordinates(self, game_board):
+    def update_player_coordinates(self, new_coordinates):
         """Updates and hold the players position on board"""
 
-        for row in game_board:
-            for position in row:
-                if position == "[x]":
-                    self.coordinates = (game_board.index(row), row.index(position))
+        self.previous_coordinates = self.coordinates
+        self.coordinates = new_coordinates
 
 
 class Rooms:

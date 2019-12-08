@@ -63,6 +63,8 @@ class TestCases(unittest.TestCase):
 
     def test_place_hero(self):
 
+        test_player = classes.Heroes('Test', 'Knight')
+
         board = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
                  ['[ ]', '[ ]', '[ ]', '[ ]']]
 
@@ -77,7 +79,7 @@ class TestCases(unittest.TestCase):
         board = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
                  ['[ ]', '[ ]', '[ ]', '[ ]']]
 
-        actual_result1 = main.place_hero(coordinates1, board)
+        actual_result1 = main.place_hero(coordinates1, board, test_player)
         self.assertEqual(expected_result1, actual_result1)
 
         expected_result2 = [['[ ]', '[ ]', '[ ]', '[x]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
@@ -86,7 +88,7 @@ class TestCases(unittest.TestCase):
         board = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
                  ['[ ]', '[ ]', '[ ]', '[ ]']]
 
-        actual_result2 = main.place_hero(coordinates2, board)
+        actual_result2 = main.place_hero(coordinates2, board, test_player)
         self.assertEqual(expected_result2, actual_result2)
 
         expected_result3 = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
@@ -94,7 +96,7 @@ class TestCases(unittest.TestCase):
 
         board = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
                  ['[ ]', '[ ]', '[ ]', '[ ]']]
-        actual_result3 = main.place_hero(coordinates3, board)
+        actual_result3 = main.place_hero(coordinates3, board, test_player)
         self.assertEqual(expected_result3, actual_result3)
 
         expected_result4 = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
@@ -102,7 +104,7 @@ class TestCases(unittest.TestCase):
 
         board = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
                  ['[ ]', '[ ]', '[ ]', '[ ]']]
-        actual_result4 = main.place_hero(coordinates4, board)
+        actual_result4 = main.place_hero(coordinates4, board, test_player)
         self.assertEqual(expected_result4, actual_result4)
 
     def test_generate_treasure(self):
@@ -306,18 +308,14 @@ class TestCases(unittest.TestCase):
 
         test_character = classes.Heroes('Orvar', 'Knight')
 
-        first_position = [['[ ]', '[ ]', '[ ]', '[x]'], ['[ ]', '[ ]', '[ ]', '[ ]']]
-        second_position = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[x]']]
 
-        expected_coordinate_1 = (0, 0)
-        expected_coordinate_2 = (0, 3)
-        expected_coordinate_3 = (1, 3)
 
-        self.assertEqual(expected_coordinate_1, test_character.coordinates)
-        test_character.update_player_coordinates(first_position)
-        self.assertEqual(expected_coordinate_2, test_character.coordinates)
-        test_character.update_player_coordinates(second_position)
-        self.assertEqual(expected_coordinate_3, test_character.coordinates)
+        old_coordinates = (0, 0)
+        new_coordinates = (0, 3)
+
+        self.assertEqual(old_coordinates, test_character.coordinates)
+        test_character.update_player_coordinates(new_coordinates)
+        self.assertEqual(new_coordinates, test_character.coordinates)
 
     def test_set_room_symbol(self):
 
