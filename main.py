@@ -14,8 +14,18 @@ def new_game_text():
         print(f.read())
 
 
-def print_board(game_board):
-    print()
+def print_hero_stats(hero):
+    print("\n__________________________________________")
+    print(f"{hero.name} ({hero.hero_class})")
+    print(f"Initiativ   Tålighet    Attack  Smidighet")
+    print(f"        {hero.initiative}          {hero.resistance}         {hero.attack}          {hero.agility}")
+    print("__________________________________________")
+
+def print_board(game_board, hero):
+
+    print_hero_stats(hero)
+
+    print('\nKARTA')
     for row in game_board:
         print(" ".join(row))
 
@@ -36,8 +46,6 @@ def get_selected_room(start_coordinates, room_list):
 
 def start_position(choice, grid_size, room_list):
 
-    start_coordinates = (0,0)
-
     if choice == "1":
         start_coordinates = (0, 0)
         get_selected_room(start_coordinates, room_list)
@@ -47,17 +55,25 @@ def start_position(choice, grid_size, room_list):
         start_coordinates = (grid_size-1, 0)
     elif choice == "4":
         start_coordinates = (grid_size-1, grid_size -1)
+    else:
+        print("\n-- Felaktig input, ange en siffra från menyn. --")
+        return False
     return start_coordinates
 
 
-def choose_corner(game_board):
+def choose_corner(game_board, grid_size, room_list, hero):
     while True:
-        print_board(game_board)
+        print_board(game_board, hero)
         print("\n[1] - Uppe till vänster\n"
               "[2] - Uppe till höger\n"
               "[3] - Nere till vänster\n"
               "[4] - Nere till höger\n")
-        return input('Välj ett hörn att starta i: ')
+        coordinates = start_position(input('Välj ett hörn att starta i: '), grid_size, room_list)
+
+        if not coordinates:
+            print("\n-- Felaktig input, ange en siffra från menyn. --")
+        else:
+            return coordinates
 
 
 def make_board(grid_size):
@@ -92,16 +108,16 @@ def choose_character(name):
 
         character_choice = input("\nVälj karaktär: ")
         if character_choice == "1":
-            hero = Heroes(name, "Knight")
+            hero = Heroes(name, "Riddare")
             hero.knight_initiation()
             return hero
         elif character_choice == "2":
-            hero = Heroes(name, "Thief")
-            hero.thief_initiation()
+            hero = Heroes(name, "Trollkarl")
+            hero.wizard_initiation()
             return hero
         elif character_choice == "3":
-            hero = Heroes(name, "Wizard")
-            hero.wizard_initiation()
+            hero = Heroes(name, "Tjuv")
+            hero.thief_initiation()
             return hero
         else:
             print("\n-- Felaktig input, ange en siffra från menyn. --")
@@ -129,10 +145,10 @@ def main_menu_choice(menu_choice):
         grid_size = get_grid_size(size_choice)
         game_board = make_board(grid_size)
         room_list = create_rooms(grid_size)
-        start_corner = choose_corner(game_board)
-        start_coordinates = start_position(start_corner, grid_size, room_list)
+        start_coordinates = choose_corner(game_board, grid_size, room_list, hero)
+
         place_hero(start_coordinates, game_board)
-        print_board(game_board)
+        print_board(game_board, hero)
 
         # TODO Move loop
 
