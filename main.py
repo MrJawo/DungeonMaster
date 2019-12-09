@@ -1,20 +1,32 @@
 import classes
+from os import system, name
+
+
+def clear_screen():
+    if name == 'nt':
+        _ = system('cls')
+    else:
+        _ = system('clear')
 
 
 def get_character_name():
-
+    clear_screen()
+    print("\n[Dungeon Run]")
     character_name = input("\nSkriv in namnet på din nya karaktär: ")
     return character_name.title()
 
 
 # Läser in och skriver ut printar text från textfil med karaktärerna och dess attribut.
 def new_game_text():
-    with open('introtext.txt', 'r') as f:
+    clear_screen()
+    print("\n[Dungeon Run]")
+    with open('introtext.txt', 'r', encoding="utf-8") as f:
         print(f.read())
 
 
 def print_board(game_board, hero):
-    print('\n' * 100)
+
+    clear_screen()
     print_hero_stats(hero)
 
     print('\nKARTA')
@@ -69,6 +81,7 @@ def choose_corner(game_board, hero):
             break
         else:
             print("\n-- Felaktig input, ange en siffra från menyn. --")
+            input('-- Tyck på valfri tangent för att fortsätta --')
 
     return start_corner
 
@@ -76,7 +89,7 @@ def choose_corner(game_board, hero):
 def choose_path():
     path = ""
     while path != "UPP" and path != "NER" and path != "VÄNSTER" and path != "HÖGER":
-        path = input("Vilket håll vill du gå? (UPP, NER, VÄNSTER, HÖGER): ")
+        path = input("\nVilket håll vill du gå? (UPP, NER, VÄNSTER, HÖGER): ")
         path = path.upper()
     return path
 
@@ -86,7 +99,7 @@ def chosen_path(path, coordinates, grid_size):
     x, y = coordinates
     if path == "UPP":
         if x == 0:
-            print("Du slog in i en vägg, välj ett annat håll")
+            print("\n-- Du slog in i en vägg, välj ett annat håll --")
             return False
         else:
             x = x - 1
@@ -94,7 +107,7 @@ def chosen_path(path, coordinates, grid_size):
             return [coordinates, old_coordinates]
     if path == "NER":
         if x == grid_size - 1:
-            print("Du slog in i en vägg, välj ett annat håll")
+            print("\n-- Du slog in i en vägg, välj ett annat håll --")
             return False
         else:
             x = x + 1
@@ -102,7 +115,7 @@ def chosen_path(path, coordinates, grid_size):
             return [coordinates, old_coordinates]
     if path == "VÄNSTER":
         if y == 0:
-            print("Du slog in i en vägg, välj ett annat håll")
+            print("\n-- Du slog in i en vägg, välj ett annat håll --")
             return False
         else:
             y = y - 1
@@ -110,7 +123,7 @@ def chosen_path(path, coordinates, grid_size):
             return [coordinates, old_coordinates]
     if path == "HÖGER":
         if y == grid_size - 1:
-            print("Du slog in i en vägg, välj ett annat håll")
+            print("\n-- Du slog in i en vägg, välj ett annat håll --")
             return False
         else:
             y = y + 1
@@ -153,16 +166,26 @@ def get_grid_size(menu_choice):
 
 def board_size_choice():
     while True:
+        clear_screen()
+        print("\n[Dungeon Run]")
+
         print("\n[1] - Liten (4x4)")
         print("[2] - Mellan (5x5)")
         print("[3] - Stor (8x8)")
         menu_choice = input("\nVilken storlek vill du ha på kartan? Ange 1, 2 eller 3: ")
         if menu_choice == "1" or menu_choice == "2" or menu_choice == "3":
             return menu_choice
+        else:
+            print("\n-- Felaktig input, ange en siffra från menyn. --")
+            input('-- Tyck på valfri tangent för att fortsätta --')
 
 
 def choose_character(character_name):
+
     while True:
+        clear_screen()
+        print("\n[Dungeon Run]")
+        new_game_text()
         print("\n[1] - Riddaren\n"
               "[2] - Trollkarlen\n"
               "[3] - Tjuven")
@@ -183,15 +206,17 @@ def choose_character(character_name):
             return hero
         else:
             print("\n-- Felaktig input, ange en siffra från menyn. --")
+            input('-- Tyck på valfri tangent för att fortsätta --')
 
 
 def exit_map(game_board, start_coordinates):
     exit_choice = ''
 
     if game_board[start_coordinates[0]][start_coordinates[1]] == '[x]':
-        exit_choice = input("Rummet innehåller en utgång\n"
-                            "[1] - Lämna kartan\n"
-                            "[2] - Stanna kvar")
+        print("\nRummet innehåller en utgång\n\n"
+                        "[1] - Lämna kartan\n"
+                        "[2] - Stanna kvar")
+        exit_choice = input("\nSkriv in ditt val: ")
     if exit_choice == '1':
         return True
     elif exit_choice == '2':
@@ -212,12 +237,11 @@ def create_rooms(grid_size):
     return room_list
 
 
-
 def main_menu_choice(menu_choice):
     while True:
+
         if menu_choice == "1":
             character_name = get_character_name()
-            new_game_text()
             hero = choose_character(character_name)
             size_choice = board_size_choice()
             grid_size = get_grid_size(size_choice)
@@ -255,6 +279,9 @@ def main_menu_choice(menu_choice):
 
 def main_menu():
     while True:
+        clear_screen()
+        print("\nVälkommen till [Dungeon Run]!")
+
         print("\n[1] - Nytt spel\n"
               "[2] - Ladda sparad karaktär\n"
               "[3] - Avsluta")
@@ -264,12 +291,10 @@ def main_menu():
             break
         else:
             print("\n-- Felaktig input, ange en siffra från menyn. --")
+            input('-- Tyck på valfri tangent för att fortsätta --')
 
 
 if __name__ == '__main__':
-
-    hero_list = []
-    print("\nVälkommen till Dungeon Run!")
 
     while True:
         main_menu()
