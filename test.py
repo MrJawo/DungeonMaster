@@ -127,6 +127,14 @@ class TestCases(unittest.TestCase):
         actual_result = game_functions.number_sum(test_list)
         self.assertEqual(expected_result, actual_result)
 
+    def test_treasure_sum(self):
+
+        test_list = [('Slantar: 2', 2), ('Ädelstenar: 14', 14)]
+        expected_result = 16
+        actual_result = game_functions.treasure_sum(test_list)
+        self.assertEqual(expected_result, actual_result)
+
+
     def test_clean_list(self):
 
         test_list = [0, 0, (1,2), 0, (1,2)]
@@ -308,8 +316,6 @@ class TestCases(unittest.TestCase):
 
         test_character = classes.Heroes('Orvar', 'Knight')
 
-
-
         old_coordinates = (0, 0)
         new_coordinates = (0, 3)
 
@@ -323,7 +329,7 @@ class TestCases(unittest.TestCase):
 
         expected_result = "[ ]"
         self.assertEqual(expected_result, test_room.symbol)
-        test_room.set_room_symbol()
+        test_room.set_finished_room_symbol()
         expected_result = "[.]"
         self.assertEqual(expected_result, test_room.symbol)
 
@@ -365,8 +371,6 @@ class TestCases(unittest.TestCase):
         monster_1 = room.monster_list[0]
         actual_result = monster_1.resistance
         self.assertEqual(expected_result, actual_result)
-
-
 
 if __name__ == '__main__':
     unittest.main()

@@ -5,11 +5,19 @@ import classes
 def number_sum(int_list):
     """Returns the sum of integers from a list"""
 
-    sum = 0
+    list_sum = 0
     for number in int_list:
-        sum += number
+        list_sum += number
 
-    return sum
+    return list_sum
+
+def treasure_sum(treasure_list):
+    """Returns the sum of first element in tuple"""
+
+    treasure_sum = 0
+    for treasure in treasure_list:
+        treasure_sum += treasure[1]
+    return treasure_sum
 
 
 def generate_treasure(chance, treasure_type, treasure_value, random_int):
@@ -232,30 +240,28 @@ def battle(hero, character_list):
                     attack(monster, hero, hero)
 
 
-def enter_room_event(hero, game_board, start_coordinates):
+def enter_room_event(hero, start_coordinates, room):
     """Function that runs every time the player enters a room"""
 
-    coordinates = hero.coordinates
-    if game_board[coordinates[0]][coordinates[1]] == " ":
+    # TODO make function that gets coordinates for room
+    coordinates = room.coordinates
+    hero.update_player_coordinates(coordinates)
 
-        character_list = get_monster_list()
+    if len(room.monster_list) > 0:
 
-        if len(character_list) > 0:
-            battle(hero, character_list)
+        character_list = room.monster_list
+        battle(hero, character_list)
 
-        else:
-            treasure = get_treasures()
-            if treasure > 0:
-                hero.map_treasure += treasure
-                print("\nDu plockade upp skatten!")
-            else:
-                print("\n Inga skatter hittades i rummet.")
-
-        # TODO Implement exit function
-        if coordinates == start_coordinates:
-            # If character stands on start position
-            pass
     else:
-        if coordinates == hero.start_coordinates:
-            # If character stands on start position
-            pass
+        sum_of_treasure = treasure_sum(room.treasure_list)
+        if sum_of_treasure > 0:
+            hero.map_treasure += treasure
+            print("\nDu plockade upp skatten!")
+        else:
+            print("\n Inga skatter hittades i rummet.")
+
+    # TODO Implement exit function
+    if coordinates == start_coordinates:
+        # If character stands on start position
+        pass
+

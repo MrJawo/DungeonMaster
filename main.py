@@ -81,7 +81,6 @@ def choose_corner(game_board, grid_size, room_list, hero):
             return coordinates
 
 
-
 def create_rooms(grid_size):
     """Creates an instance for each room on the map"""
 
