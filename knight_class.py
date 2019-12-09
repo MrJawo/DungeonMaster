@@ -1,38 +1,77 @@
 
 #Main class used give attributes to all characters
 class Creature():
-    def __init__(self, name, initiative, resistance, attack, agility):
-        self.name = name
-        self.initiative = initiative
-        self.resistance = resistance
-        self.attack = attack
-        self.agility = agility
+    def __init__(self):
+        self.name = ""
+        self.initiative = 0
+        self.resistance = 0
+        self.attack = 0
+        self.agility = 0
 
 #Sub class used to give unique attributes to Knight
-class Knight(Creature):
-    def __init__(self, name, initiative, resistance, attack, agility, point):
-        super().__init__(name, initiative, resistance, attack, agility)
-        self.point = point
+class Hero(Creature):
+    def __init__(self, name, hero_class):   
+        super().__init__()
+        self.name = name
+        self.point = 0
+        self.hero_class = hero_class
+        self.coordinates = (0,0)
+        self.previous_coordinates = (0,0)
 
-#List to temp save newly created object
-hero_list = []
+    def update_coordinates(self, new_coordinates, old_coordinates):
+        self.coordinates = new_coordinates
+        self.previous_coordinates = old_coordinates
 
-#Function to add a Knight to list.
-def add_knight(hero_list, name):
+    #Function to add a Knight to list.
+    def add_knight(self):
+        self.initiative = 5
+        self.resistance = 9
+        self.attack = 6
+        self.agility = 4
+        self.point = 0
+    
+    def add_wizard(self):
+        self.initiative = 6
+        self.resistance = 4
+        self.attack = 9
+        self.agility = 5
+        self.point = 0
 
-    initiative = 5
-    resistance = 9
-    attack = 6
-    agility = 4
-    point = 0
+    def add_thief(self):
+        self.initiative = 7
+        self.resistance = 5
+        self.attack = 5
+        self.agility = 7
+        self.point = 0
 
-    #Add hero to list
-    hero_list.append(Knight(name,initiative,resistance,attack,agility,point))
+class Monster(Creature):
+    def __init__(self):
+        super().__init__()
 
+    def add_giant_spider(self):
+        self.initiative = 7
+        self.resistance = 1
+        self.attack = 2
+        self.agility = 3
+        self.name = "Jättespindel"
 
-#Function to print all objects in list
-def print_hero_list(list):
-    print("Name\t\tinitiative\tResistance\tAttack\tAgility\tPoints")
-    for Knight in hero_list:
-        print("%s\t%d\t\t%d\t\t%d\t%d\t%d" % (Knight.name,Knight.initiative,Knight.resistance,Knight.attack,Knight.agility,Knight.point))
+    def add_skeleton(self):
+        self.initiative = 4
+        self.resistance = 2
+        self.attack = 3
+        self.agility = 3
+        self.name = "Skelett"
 
+    def add_orc(self):
+        self.initiative = 6
+        self.resistance = 3
+        self.attack = 4
+        self.agility = 4
+        self.name = "Orc"
+
+    def add_troll(self):
+        self.initiative = 2
+        self.resistance = 4
+        self.attack = 7
+        self.agility = 2
+        self.name = "Troll"

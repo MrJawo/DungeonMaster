@@ -81,12 +81,17 @@ def choose_character(name):
 
         character_choice = input("\nVälj karaktär: ")
         if character_choice == "1":
-            knight_class.add_knight(hero_list, name)
-            break
+            Hero = knight_class.Hero(name, "Riddare")
+            Hero.add_knight()
+            return Hero
         elif character_choice == "2":
-            pass
+            Hero = knight_class.Hero(name, "Trollkarl")
+            Hero.add_wizard()
+            return Hero
         elif character_choice == "3":
-            pass
+            Hero = knight_class.Hero(name, "Thief")
+            Hero.add_thief()
+            return Hero
         else:
             print("\n-- Felaktig input, ange en siffra från menyn. --")
 
@@ -95,7 +100,7 @@ def main_menu_choice(menu_choice):
     if menu_choice == "1":
         name = character_name()
         new_game_text()
-        choose_character(name)
+        Hero = choose_character(name)
         size_choice = board_size_choice()
         grid_size = get_grid_size(size_choice)
         game_board = make_board(grid_size)
