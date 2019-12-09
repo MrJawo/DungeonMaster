@@ -63,7 +63,14 @@ def choose_corner(game_board, hero):
               "[2] - Uppe till höger\n"
               "[3] - Nere till vänster\n"
               "[4] - Nere till höger\n")
-        return input('Välj ett hörn att starta i: ')
+        number_list = ["1","2","3","4"]
+        start_corner = input('Välj ett hörn att starta i: ')
+        if start_corner in number_list:
+            break
+        else:
+            print("\n-- Felaktig input, ange en siffra från menyn. --")
+
+    return start_corner
 
 
 def choose_path():
