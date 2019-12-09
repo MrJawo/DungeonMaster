@@ -11,6 +11,7 @@ def number_sum(int_list):
 
     return list_sum
 
+
 def treasure_sum(treasure_list):
     """Returns the sum of first element in tuple"""
 
@@ -43,25 +44,26 @@ def get_treasures():
     return treasure_list
 
 
-def generate_monster(chance, monster_type, random_int):
+def generate_monster(spawn_rate, monster_type, percent):
     """Creates a monster instance based of monster type"""
 
-    if random_int <= chance:
+    if percent <= spawn_rate:
         if monster_type == "Jättespindel":
-            monster = classes.Creatures()
-            monster.spider_initiation()
+            monster = classes.Monster()
+            monster.add_giant_spider()
             return monster
         elif monster_type == "Skelett":
-            monster = classes.Creatures()
-            monster.skeleton_initiation()
+            monster = classes.Monster()
+            monster.add_skeleton()
             return monster
         elif monster_type == "Orc":
-            monster = classes.Creatures()
-            monster.orc_initiation()
+            monster = classes.Monster()
+            monster.add_orc()
             return monster
         elif monster_type == "Troll":
-            monster = classes.Creatures()
-            monster.troll_initiation()
+            monster = classes.Monster()
+            monster.add_troll()
+
             return monster
     else:
         return 0
@@ -124,144 +126,4 @@ def dice(number_of_dices):
         list_of_numbers.append(random.randint(1, 6))
     sum_of_dices = number_sum(list_of_numbers)
     return sum_of_dices
-
-
-def thief_special_ability(defender):
-    """Checks if thief gets another hit on enemy"""
-
-    percent = random.randint(1, 100)
-    if percent <= 25:
-        defender.lost_health_point()
-        return True
-    else:
-        return False
-
-
-def attack(attacker, defender, hero):
-    """Function for attack"""
-
-    attack_value = dice(attacker.attack)
-    defend_value = dice(defender.agility)
-
-    if defender == hero and hero.hero_class == "Knight" and hero.special_ability:
-        print('\nSköldblock! Din hjälte skadade sig inte denna runda.')
-        hero.special_ability = False
-    else:
-        if attack_value > defend_value:
-            defender.lost_health_point()
-            if attacker.hero_class == "Thief":
-                if thief_special_ability(defender):
-                    print('\nKritisk träff! En extra skada utdelat.')
-                else:
-                    print('\nKritisk träff missade.')
-        else:
-            print(f"\n{attacker.name}s attack missade {defender.name}.")
-
-
-def print_character_turns(character_list):
-    """Prints the correct turn order"""
-
-    i = 1
-    for character in character_list:
-        print('\nTurordningen för denna strid är:')
-        print(f"{i}. {character.name}")
-
-
-def menu_choice_attack(monster_list, hero):
-    """Handles fight choice in battle"""
-
-    attack(hero, monster_list[0], hero)
-    current_monster = monster_list[0]
-    if current_monster.resistance == 0:
-        print(f"{current_monster.name} dog!")
-        monster_list.remove(current_monster)
-        if len(monster_list) > 0:
-            print(f"\nNästa monster att döda: {monster_list[0]}")
-
-
-def menu_choice_flee(hero):
-    """Handles escape choice in battle"""
-
-    escape_chance = hero.agility * 10
-    if hero.hero_class == "Wizard":
-        escape_chance = 80
-        print('\nDu använder ljussken och får 80% chans att lyckas fly.')
-    random_number = random.randint(1, 100)
-    if escape_chance >= random_number:
-        # TODO Escape scenario
-        pass
-
-
-def menu_choice_battle(choice, monster_list, hero):
-    """Directs user to right function depending on choice"""
-
-    if choice == 1:
-        menu_choice_attack(monster_list, hero)
-    else:
-        menu_choice_flee(hero)
-
-
-def battle(hero, character_list):
-    """Battle function"""
-
-    monster_list = character_list
-    character_list.append(hero)
-
-    for character in character_list:
-        character.throw_initiative_dice()
-
-    character_list = sort_turn_list(character_list)
-
-    for monster in monster_list:
-        monster.throw_initiative_dice()
-
-    monster_list = sort_turn_list(monster_list)
-
-    while True:
-        if hero.resistance == 0:
-            # TODO Handle hero death scenario
-            if hero.hero_class == "Knight":
-                hero.special_ability = True
-        if len(monster_list) == 0:
-            # TODO Handle won battle scenario
-            if hero.hero_class == "Knight":
-                hero.special_ability = True
-
-        for character in character_list:
-            if character.name == hero.name:
-                print('\nStriden har börjat! Vad vill du göra?')
-                print(f"\n[1] - Attackera"
-                      f"\n[2] - Försök att fly")
-                choice = input('\nSkriv in ditt val: ')
-                menu_choice_battle(choice, monster_list, hero)
-
-            else:
-                for monster in monster_list:
-                    attack(monster, hero, hero)
-
-
-def enter_room_event(hero, start_coordinates, room):
-    """Function that runs every time the player enters a room"""
-
-    # TODO make function that gets coordinates for room
-    coordinates = room.coordinates
-    hero.update_player_coordinates(coordinates)
-
-    if len(room.monster_list) > 0:
-
-        character_list = room.monster_list
-        battle(hero, character_list)
-
-    else:
-        sum_of_treasure = treasure_sum(room.treasure_list)
-        if sum_of_treasure > 0:
-            hero.map_treasure += treasure
-            print("\nDu plockade upp skatten!")
-        else:
-            print("\n Inga skatter hittades i rummet.")
-
-    # TODO Implement exit function
-    if coordinates == start_coordinates:
-        # If character stands on start position
-        pass
 

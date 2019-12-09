@@ -1,6 +1,25 @@
-import knight_class
-from classes import Heroes, Creatures, Rooms
-import game_functions
+import classes
+
+
+def get_character_name():
+
+    character_name = input("\nSkriv in namnet på din nya karaktär: ")
+    return character_name.title()
+
+
+# Läser in och skriver ut printar text från textfil med karaktärerna och dess attribut.
+def new_game_text():
+    with open('introtext.txt', 'r') as f:
+        print(f.read())
+
+
+def print_board(game_board, hero):
+    print('\n' * 100)
+    print_hero_stats(hero)
+
+    print('\nKARTA')
+    for row in game_board:
+        print(" ".join(row))
 
 
 def print_hero_stats(hero):
@@ -13,98 +32,110 @@ def print_hero_stats(hero):
     print("__________________________________________")
 
 
-def print_game_board(game_board, hero):
-    """Prits the games current game board"""
-
-    print_hero_stats(hero)
-
-    print('\nKARTA')
-    for row in game_board:
-        print(" ".join(row))
-
-
-def place_hero(new_coordinates, game_board, hero):
-    """places hero at right position on map"""
-
-    hero.update_player_coordinates(new_coordinates)
-    game_board[new_coordinates[0]][new_coordinates[1]] = "[x]"
-
+def place_hero(coordinates, game_board):
+    game_board[coordinates[0]][coordinates[1]] = "[x]"
     return game_board
 
 
-def set_start_room(start_coordinates, room_list):
-    """Sets the start room to right conditions"""
+def start_position(choice, grid_size, room_list):
+    start_coordinates = ""
+
+    if choice == "1":
+        start_coordinates = (0, 0)
+    elif choice == "2":
+        start_coordinates = (0, grid_size-1)
+    elif choice == "3":
+        start_coordinates = (grid_size-1, 0)
+    elif choice == "4":
+        start_coordinates = (grid_size-1, grid_size -1)
 
     for room in room_list:
         if room.coordinates == start_coordinates:
             room.set_start_room_symbol()
-            room.exit = True
-            room.monster_list = []
-            room.treasure_list = []
 
-
-def start_position(choice, grid_size, room_list):
-    """Translates menu choice to start coordinates"""
-
-    if choice == "1":
-        start_coordinates = (0, 0)
-        set_start_room(start_coordinates, room_list)
-    elif choice == "2":
-        start_coordinates = (0, grid_size-1)
-        set_start_room(start_coordinates, room_list)
-    elif choice == "3":
-        start_coordinates = (grid_size-1, 0)
-        set_start_room(start_coordinates, room_list)
-    elif choice == "4":
-        start_coordinates = (grid_size-1, grid_size-1)
-        set_start_room(start_coordinates, room_list)
-    else:
-        print("\n-- Felaktig input, ange en siffra från menyn. --")
-        return False
     return start_coordinates
 
 
-def choose_corner(game_board, grid_size, room_list, hero):
-    """Prints start position menu, returns coordinates"""
-
+def choose_corner(game_board, hero):
     while True:
-        print_game_board(game_board, hero)
+        print_board(game_board, hero)
         print("\n[1] - Uppe till vänster\n"
               "[2] - Uppe till höger\n"
               "[3] - Nere till vänster\n"
               "[4] - Nere till höger\n")
-        coordinates = start_position(input('Välj ett hörn att starta i: '), grid_size, room_list)
+        return input('Välj ett hörn att starta i: ')
 
-        if not coordinates:
-            print("\n-- Felaktig input, ange en siffra från menyn. --")
+
+def choose_path():
+    path = ""
+    while path != "UPP" and path != "NER" and path != "VÄNSTER" and path != "HÖGER":
+        path = input("Vilket håll vill du gå? (UPP, NER, VÄNSTER, HÖGER): ")
+        path = path.upper()
+    return path
+
+
+def chosen_path(path, coordinates, grid_size):
+    old_coordinates = coordinates
+    x, y = coordinates
+    if path == "UPP":
+        if x == 0:
+            print("Du slog in i en vägg, välj ett annat håll")
+            return False
         else:
-            return coordinates
+            x = x - 1
+            coordinates = (x, y)
+            return [coordinates, old_coordinates]
+    if path == "NER":
+        if x == grid_size - 1:
+            print("Du slog in i en vägg, välj ett annat håll")
+            return False
+        else:
+            x = x + 1
+            coordinates = (x, y)
+            return [coordinates, old_coordinates]
+    if path == "VÄNSTER":
+        if y == 0:
+            print("Du slog in i en vägg, välj ett annat håll")
+            return False
+        else:
+            y = y - 1
+            coordinates = (x, y)
+            return [coordinates, old_coordinates]
+    if path == "HÖGER":
+        if y == grid_size - 1:
+            print("Du slog in i en vägg, välj ett annat håll")
+            return False
+        else:
+            y = y + 1
+            coordinates = (x, y)
+            return [coordinates, old_coordinates]
 
 
-def create_rooms(grid_size):
-    """Creates an instance for each room on the map"""
-
-    room_list = []
-
-    for i in range(grid_size):
-        for j in range(grid_size):
-            room = Rooms()
-            room.coordinates = (i, j)
-            room.generate_room_content()
-            room_list.append(room)
-    return room_list
+def take_step(coordinates, grid_size):
+    while True:
+        path = choose_path()
+        coordinates_list = chosen_path(path, coordinates, grid_size)
+        if coordinates_list is not False:
+            break
+    return coordinates_list
 
 
 def make_board(grid_size):
-    """Creates a multi-dimensional array from selected size"""
+    grid = [['[ ]' for number in range(grid_size)] for number in range(grid_size)]
+    return grid
 
-    game_map = [['[ ]' for number in range(grid_size)] for number in range(grid_size)]
-    return game_map
+
+def update_board(game_board, coordinates_list, start_coordinates):
+    new_coordinates = coordinates_list[0]
+    old_coordinates = coordinates_list[1]
+    game_board[new_coordinates[0]][new_coordinates[1]] = "[x]"
+    if old_coordinates == start_coordinates:
+        game_board[old_coordinates[0]][old_coordinates[1]] = "[O]"
+    else:
+        game_board[old_coordinates[0]][old_coordinates[1]] = "[.]"
 
 
 def get_grid_size(menu_choice):
-    """Returns preferred grid size depending on menu choice"""
-
     if menu_choice == "1":
         return 4
     elif menu_choice == "2":
@@ -114,8 +145,6 @@ def get_grid_size(menu_choice):
 
 
 def board_size_choice():
-    """Prints grid size menu and returns menu choice"""
-
     while True:
         print("\n[1] - Liten (4x4)")
         print("[2] - Mellan (5x5)")
@@ -125,9 +154,7 @@ def board_size_choice():
             return menu_choice
 
 
-def choose_character(name):
-    """Prints character menu and returns the selected hero object"""
-
+def choose_character(character_name):
     while True:
         print("\n[1] - Riddaren\n"
               "[2] - Trollkarlen\n"
@@ -135,68 +162,91 @@ def choose_character(name):
 
         character_choice = input("\nVälj karaktär: ")
         if character_choice == "1":
-            hero = Heroes(name, "Riddare")
-            hero.knight_initiation()
+            hero = classes.Hero(character_name, "Riddare")
+            hero.add_knight()
+
             return hero
         elif character_choice == "2":
-            hero = Heroes(name, "Trollkarl")
-            hero.wizard_initiation()
+            hero = classes.Hero(character_name, "Trollkarl")
+            hero.add_wizard()
             return hero
         elif character_choice == "3":
-            hero = Heroes(name, "Tjuv")
-            hero.thief_initiation()
+            hero = classes.Hero(character_name, "Thief")
+            hero.add_thief()
             return hero
         else:
             print("\n-- Felaktig input, ange en siffra från menyn. --")
 
 
-def new_game_text():
-    """Prints the intro text, containing info about available characters"""
+def exit_map(game_board, start_coordinates):
+    exit_choice = ''
 
-    with open('introtext.txt', 'r') as f:
-        print(f.read())
+    if game_board[start_coordinates[0]][start_coordinates[1]] == '[x]':
+        exit_choice = input("Rummet innehåller en utgång\n"
+                            "[1] - Lämna kartan\n"
+                            "[2] - Stanna kvar")
+    if exit_choice == '1':
+        return True
+    elif exit_choice == '2':
+        return False
 
 
-def character_name():
-    """Gets the character name from user"""
+def create_rooms(grid_size):
+    """Creates an instance for each room on the map"""
 
-    name = input("\nSkriv in namnet på din nya karaktär: ")
-    return name.title()
+    room_list = []
 
+    for i in range(grid_size):
+        for j in range(grid_size):
+            room = classes.Rooms()
+            room.coordinates = (i, j)
+            room.generate_room_content()
+            room_list.append(room)
+    return room_list
 
-def new_game():
-    """Initiates a new player"""
-
-    name = character_name()
-    new_game_text()
-    hero = choose_character(name)
-    size_choice = board_size_choice()
-    grid_size = get_grid_size(size_choice)
-    game_board = make_board(grid_size)
-    room_list = create_rooms(grid_size)
-    start_coordinates = choose_corner(game_board, grid_size, room_list, hero)
-
-    place_hero(start_coordinates, game_board, hero)
-    print_game_board(game_board, hero)
-
-    # TODO Move loop
 
 
 def main_menu_choice(menu_choice):
-    """Directs the player depending on menu choice"""
+    while True:
+        if menu_choice == "1":
+            character_name = get_character_name()
+            new_game_text()
+            hero = choose_character(character_name)
+            size_choice = board_size_choice()
+            grid_size = get_grid_size(size_choice)
+            game_board = make_board(grid_size)
+            room_list = create_rooms(grid_size)
+            start_corner = choose_corner(game_board, hero)
+            start_coordinates = start_position(start_corner, grid_size, room_list)
 
-    if menu_choice == "1":
-        new_game()
+            place_hero(start_coordinates, game_board)
+            print_board(game_board, hero)
+            current_coordinates = start_coordinates
 
-    elif menu_choice == "2":
-        pass
-    elif menu_choice == "3":
-        exit()
+
+            # #Test för att se om det är några monter/skatter i varje rum. Testa om ni vill :)
+            # for room in room_list:
+            #     print()
+            #     print(f"Room: {room.coordinates}")
+            #     i = 1
+            #     for monster in room.monster_list:
+            #         print(f"Monster {i}: {monster.name}")
+            #         i += 1
+            #     if len(room.treasure_list) > 0:
+            #         print(f"Treasures: {room.treasure_list}")
+            #     print()
+
+            while True:
+                coordinates_list = take_step(current_coordinates, grid_size)
+                current_coordinates = coordinates_list[0]
+                update_board(game_board, coordinates_list, start_coordinates)
+                print_board(game_board, hero)
+                exit_to_menu = exit_map(game_board, (start_coordinates[0],start_coordinates[1]))
+                if exit_to_menu:
+                    main_menu()
 
 
 def main_menu():
-    """The start of the program, prints the main menu"""
-
     while True:
         print("\n[1] - Nytt spel\n"
               "[2] - Ladda sparad karaktär\n"
@@ -212,11 +262,8 @@ def main_menu():
 if __name__ == '__main__':
 
     hero_list = []
-    monster_list = []
-    treasure_list = []
-
     print("\nVälkommen till Dungeon Run!")
 
     while True:
         main_menu()
-        break
+
