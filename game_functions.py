@@ -3,6 +3,7 @@ import classes
 import main
 from time import sleep
 
+
 def number_sum(int_list):
     """Returns the sum of integers from a list"""
 
@@ -161,14 +162,13 @@ def attack_func(attacker, defender, hero):
                     input('\n-- Tyck på valfri tangent för att fortsätta --')
                     defender.resistance -= 1
     else:
-        print(f"\nAttack misslyckades!]")
+        print(f"\nAttack misslyckades!")
         input('\n-- Tyck på valfri tangent för att fortsätta --')
 
 
 def dead_message(hero):
     while True:
         main.clear_screen()
-        print("\n[Dungeon Run]")
 
         print(f"\n{hero.name} har dött.")
         print("Du samlade på dig ", hero.points_current_game, " poäng.")
@@ -237,7 +237,6 @@ def fight(monster_list, hero, grid_size, game_board, room_list, room):
         for creature in creature_list:
 
             main.clear_screen()
-            print("\n[Dungeon Run]")
             main.print_hero_stats(hero)
 
             if creature.name == hero.name:
@@ -250,7 +249,6 @@ def fight(monster_list, hero, grid_size, game_board, room_list, room):
                     if menu_choice == "1":
 
                         main.clear_screen()
-                        print("\n[Dungeon Run]")
 
                         monster = monster_list[0]
                         print(f"\n{hero.name} attackerar {monster.name}!")
@@ -262,25 +260,14 @@ def fight(monster_list, hero, grid_size, game_board, room_list, room):
                             monster_list.remove(monster)
                             input('\n-- Tryck på valfri knapp för att fortsätta --')
 
-                            if len(room.monster_list) > 0:
+                            if len(room.monster_list) == 0:
 
                                 main.clear_screen()
-                                print("\n[Dungeon Run]")
-
 
                                 main.print_board(game_board, hero)
                                 print('\nAlla monster besegrade!')
 
-                                if len(room.treasure_list) > 0:
-                                    print('\nDu hittade skatter i rummet:\n')
-
-                                    i = 0
-                                    for treasure in room.treasure_list:
-                                        print(f"{treasure[0]}")
-                                        i += treasure[1]
-
-                                    print(f'\nTotalt värde: {i}')
-                                    print('Skatten är tillagd i din ryggsäck')
+                                check_for_treasures(room)
 
                             else:
                                 print('Inga skatter i rummet')
@@ -301,7 +288,6 @@ def fight(monster_list, hero, grid_size, game_board, room_list, room):
                 if not knight_ability:
 
                     main.clear_screen()
-                    print("\n[Dungeon Run]")
                     main.print_hero_stats(hero)
 
                     print(f"\n{creature.name} attackerar {hero.name}!")
@@ -313,7 +299,6 @@ def fight(monster_list, hero, grid_size, game_board, room_list, room):
 
                 else:
                     main.clear_screen()
-                    print("\n[Dungeon Run]")
                     main.print_hero_stats(hero)
                     print(f"\n{creature.name} attackerar {hero.name}!")
                     delay_in_fight()
@@ -323,12 +308,7 @@ def fight(monster_list, hero, grid_size, game_board, room_list, room):
                     knight_ability = False
 
 
-def undiscovered_room(room, hero, room_list, game_board, grid_size):
-
-    if len(room.monster_list) > 0:
-        fight(room.monster_list, hero, grid_size, game_board, room_list, room)
-    else:
-        print('\nInga monster i rummet')
+def check_for_treasures(room):
     if len(room.treasure_list) > 0:
         print('Du hittade skatter i rummet:\n')
 
@@ -339,9 +319,23 @@ def undiscovered_room(room, hero, room_list, game_board, grid_size):
 
         print(f'\nTotalt värde: {i}')
         print('Skatten är tillagd i din ryggsäck')
-
+        room.treasure_list = []
+        room.set_room_symbol()
     else:
         print('Inga skatter i rummet')
+
+
+def check_for_monsters(hero, grid_size, game_board, room_list, room):
+    if len(room.monster_list) > 0:
+        fight(room.monster_list, hero, grid_size, game_board, room_list, room)
+    else:
+        print('\nInga monster i rummet')
+
+
+def undiscovered_room(room, hero, room_list, game_board, grid_size):
+
+    check_for_monsters(hero, grid_size, game_board, room_list, room)
+    check_for_treasures(room)
 
 
 def check_room(coordinates, room_list, hero, game_board, start_coordinates, grid_size):

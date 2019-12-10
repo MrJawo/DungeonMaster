@@ -8,11 +8,11 @@ def clear_screen():
         _ = system('cls')
     else:
         _ = system('clear')
+    print("\n[Dungeon Run]")
 
 
 def get_character_name():
     clear_screen()
-    print("\n[Dungeon Run]")
     character_name = input("\nSkriv in namnet på din nya karaktär: ")
     return character_name.title()
 
@@ -20,13 +20,11 @@ def get_character_name():
 # Läser in och skriver ut printar text från textfil med karaktärerna och dess attribut.
 def new_game_text():
     clear_screen()
-    print("\n[Dungeon Run]")
     with open('introtext.txt', 'r', encoding="utf-8") as f:
         print(f.read())
 
 
 def print_board(game_board, hero):
-
     clear_screen()
     print_hero_stats(hero)
 
@@ -169,7 +167,6 @@ def get_grid_size(menu_choice):
 def board_size_choice():
     while True:
         clear_screen()
-        print("\n[Dungeon Run]")
 
         print("\n[1] - Liten (4x4)")
         print("[2] - Mellan (5x5)")
@@ -186,7 +183,6 @@ def choose_character(character_name):
 
     while True:
         clear_screen()
-        print("\n[Dungeon Run]")
         new_game_text()
         print("\n[1] - Riddaren\n"
               "[2] - Trollkarlen\n"
@@ -279,13 +275,9 @@ def main_menu_choice(menu_choice):
             #     print()
 
 
-
-
-
 def main_menu():
     while True:
         clear_screen()
-        print("\nVälkommen till [Dungeon Run]")
 
         print("\n[1] - Nytt spel\n"
               "[2] - Ladda sparad karaktär\n"
