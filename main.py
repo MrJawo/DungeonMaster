@@ -1,4 +1,5 @@
 import classes
+import game_functions
 from os import system, name
 
 
@@ -49,7 +50,7 @@ def place_hero(coordinates, game_board):
     return game_board
 
 
-def start_position(choice, grid_size, room_list):
+def start_position(choice, grid_size, room_list, hero):
     start_coordinates = ""
 
     if choice == "1":
@@ -61,6 +62,7 @@ def start_position(choice, grid_size, room_list):
     elif choice == "4":
         start_coordinates = (grid_size-1, grid_size -1)
 
+    hero.start_coordinates = start_coordinates
     for room in room_list:
         if room.coordinates == start_coordinates:
             room.set_start_room_symbol()
@@ -237,6 +239,16 @@ def create_rooms(grid_size):
     return room_list
 
 
+def walk_on_board(hero, grid_size, game_board, room_list):
+    while True:
+        coordinates_list = take_step(hero.coordinates, grid_size)
+        current_coordinates = coordinates_list[0]
+        hero.update_coordinates(current_coordinates)
+        update_board(game_board, coordinates_list, hero.start_coordinates)
+        print_board(game_board, hero)
+        game_functions.check_room(current_coordinates, room_list, hero, game_board, hero.start_coordinates, grid_size)
+
+
 def main_menu_choice(menu_choice):
     while True:
 
@@ -248,12 +260,11 @@ def main_menu_choice(menu_choice):
             game_board = make_board(grid_size)
             room_list = create_rooms(grid_size)
             start_corner = choose_corner(game_board, hero)
-            start_coordinates = start_position(start_corner, grid_size, room_list)
-
+            start_coordinates = start_position(start_corner, grid_size, room_list, hero)
+            hero.coordinates = start_coordinates
             place_hero(start_coordinates, game_board)
             print_board(game_board, hero)
-            current_coordinates = start_coordinates
-
+            walk_on_board(hero, grid_size, game_board, room_list)
 
             # #Test för att se om det är några monter/skatter i varje rum. Testa om ni vill :)
             # for room in room_list:
@@ -267,20 +278,14 @@ def main_menu_choice(menu_choice):
             #         print(f"Treasures: {room.treasure_list}")
             #     print()
 
-            while True:
-                coordinates_list = take_step(current_coordinates, grid_size)
-                current_coordinates = coordinates_list[0]
-                update_board(game_board, coordinates_list, start_coordinates)
-                print_board(game_board, hero)
-                exit_to_menu = exit_map(game_board, (start_coordinates[0],start_coordinates[1]))
-                if exit_to_menu:
-                    main_menu()
+
+
 
 
 def main_menu():
     while True:
         clear_screen()
-        print("\nVälkommen till [Dungeon Run]!")
+        print("\nVälkommen till [Dungeon Run]")
 
         print("\n[1] - Nytt spel\n"
               "[2] - Ladda sparad karaktär\n"

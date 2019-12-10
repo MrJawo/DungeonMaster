@@ -7,9 +7,14 @@ class Creature:
     def __init__(self):
         self.name = ""
         self.initiative = 0
+        self.initiative_dice_sum = 0
         self.resistance = 0
         self.attack = 0
         self.agility = 0
+
+
+    def initiative_sum(self):
+        self.initiative_dice_sum = game_functions.dice(self.initiative)
 
 
 # Sub class used to give unique attributes to Knight
@@ -18,14 +23,25 @@ class Hero(Creature):
         super().__init__()
         self.name = name
         self.point = 0
+        self.points_current_game = 0
         self.hero_class = hero_class
         self.coordinates = (0, 0)
         self.previous_coordinates = (0, 0)
+        self.start_coordinates = (0, 0)
 
     def update_coordinates(self, new_coordinates):
 
         self.previous_coordinates = self.coordinates
         self.coordinates = new_coordinates
+
+    def update_total_points(self):
+
+        self.point = self.points_current_game
+        self.points_current_game = 0
+
+    def update_current_points(self, found_points):
+
+        self.points_current_game += found_points
 
     # Function to add a Knight to list.
     def add_knight(self):
