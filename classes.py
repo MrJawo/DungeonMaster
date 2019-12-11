@@ -11,6 +11,10 @@ class Creature:
         self.resistance = 0
         self.attack = 0
         self.agility = 0
+        self.is_alive = True
+
+    def died(self):
+        self.is_alive = False
 
 
     def initiative_sum(self):
@@ -69,6 +73,7 @@ class Hero(Creature):
 class Monster(Creature):
     def __init__(self):
         super().__init__()
+
 
 
     def add_giant_spider(self):

@@ -146,9 +146,16 @@ def hero_ability(hero):
         else:
             return False
 
+
 def attack_func(attacker, defender, hero):
     attack = dice(attacker.attack)
     defend = dice(defender.agility)
+
+    main.clear_screen()
+    main.print_hero_stats(hero)
+    print(f"\n{attacker.name} attackerar {defender.name}!")
+    delay_in_fight()
+
     if attack > defend:
         defender.resistance -= 1
         print(f"\nAttack lyckades! {defender.name} har {defender.resistance} liv kvar.")
@@ -187,6 +194,18 @@ def dead_message(hero):
             input('-- Tyck på valfri tangent för att fortsätta --')
 
 
+def check_for_living_monsters(room, game_board, hero, grid_size, room_list):
+    if len(room.monster_list) == 0:
+        main.clear_screen()
+        room.monster_list = []
+        main.print_board(game_board, hero)
+        print('\nAlla monster besegrade!')
+
+        check_for_treasures(room)
+        main.print_board(game_board, hero)
+        main.walk_on_board(hero, grid_size, game_board, room_list)
+
+
 def delay_in_fight():
 
     print('\n.')
@@ -195,6 +214,14 @@ def delay_in_fight():
     sleep(0.5)
     print('.')
     sleep(0.5)
+
+
+def did_monster_die(monster, room, game_board, hero, grid_size, room_list):
+    if monster.resistance == 0:
+        print(f"\n{monster.name} dog!")
+        monster.died()
+        input('\n-- Tryck på valfri knapp för att fortsätta --')
+        check_for_living_monsters(room, game_board, hero, grid_size, room_list)
 
 
 def start_fight_message(monster_list):
@@ -212,6 +239,22 @@ def start_fight_message(monster_list):
     input('\n-- Tryck på valfri knapp för att fortsätta --')
 
 
+def monster_attacks(knight_ability, creature, hero):
+
+    if not knight_ability:
+        attack_func(creature, hero, hero)
+        if hero.resistance == 0:
+            dead_message(hero)
+        return False
+    else:
+        delay_in_fight()
+        main.clear_screen()
+        main.print_hero_stats(hero)
+        print(f"\n{hero.name} använder sköldblock och ignorerade attacken!")
+        input('\n-- Tryck på valfri knapp för att fortsätta --')
+        return False
+
+
 def fight(monster_list, hero, grid_size, game_board, room_list, room):
 
     main.clear_screen()
@@ -225,6 +268,7 @@ def fight(monster_list, hero, grid_size, game_board, room_list, room):
     creature_list = monster_list
     creature_list.append(hero)
     creature_list = sort_turn_list(creature_list)
+    current_monster = 0
 
     print("\nSpelordningen följer:\n")
     i = 1
@@ -236,76 +280,40 @@ def fight(monster_list, hero, grid_size, game_board, room_list, room):
     while True:
         for creature in creature_list:
 
-            main.clear_screen()
-            main.print_hero_stats(hero)
+            if creature.is_alive:
 
-            if creature.name == hero.name:
-                while True:
-                    print(f"\n-{hero.name}s tur-\n\n"
-                          f"[1] - Attackera\n"
-                          "[2] - Pröva att fly")
+                main.clear_screen()
+                main.print_hero_stats(hero)
 
-                    menu_choice = input("\nSkriv in ditt val: ")
-                    if menu_choice == "1":
+                if creature.name == hero.name:
+                    while True:
+                        print(f"\n-{hero.name}s tur-\n\n"
+                              f"[1] - Attackera\n"
+                              "[2] - Pröva att fly")
 
-                        main.clear_screen()
+                        menu_choice = input("\nSkriv in ditt val: ")
+                        if menu_choice == "1":
 
-                        monster = monster_list[0]
-                        print(f"\n{hero.name} attackerar {monster.name}!")
-                        delay_in_fight()
-                        attack_func(hero, monster, hero)
+                            monster = monster_list[current_monster]
+                            if monster.resistance == 0:
+                                try:
+                                    current_monster += 1
+                                    monster = monster_list[current_monster]
+                                except IndexError:
+                                    pass
 
-                        if monster.resistance == 0:
-                            print(f"\n{monster.name} dog!")
-                            monster_list.remove(monster)
-                            input('\n-- Tryck på valfri knapp för att fortsätta --')
 
-                            if len(room.monster_list) == 0:
+                            attack_func(hero, monster, hero)
+                            did_monster_die(monster, room, game_board, hero, grid_size, room_list)
+                            break
 
-                                main.clear_screen()
-
-                                main.print_board(game_board, hero)
-                                print('\nAlla monster besegrade!')
-
-                                check_for_treasures(room)
-
-                            else:
-                                print('Inga skatter i rummet')
-
-                            main.walk_on_board(hero, grid_size, game_board, room_list)
-
-                        break
-
-                    elif menu_choice == "2":
-
-                        pass
-
-                    else:
-                        print("\n-- Felaktig input, ange en siffra från menyn. --")
-                        input('-- Tyck på valfri tangent för att fortsätta --')
-
-            else:
-                if not knight_ability:
-
-                    main.clear_screen()
-                    main.print_hero_stats(hero)
-
-                    print(f"\n{creature.name} attackerar {hero.name}!")
-                    delay_in_fight()
-                    attack_func(creature, hero, hero)
-
-                    if hero.resistance == 0:
-                        dead_message(hero)
-
+                        elif menu_choice == "2":
+                            pass
+                        else:
+                            print("\n-- Felaktig input, ange en siffra från menyn. --")
+                            input('-- Tyck på valfri tangent för att fortsätta --')
                 else:
-                    main.clear_screen()
-                    main.print_hero_stats(hero)
-                    print(f"\n{creature.name} attackerar {hero.name}!")
-                    delay_in_fight()
-
-                    print(f"\n{hero.name} använder sköldblock och ignorerade attacken!")
-                    input('\n-- Tryck på valfri knapp för att fortsätta --')
-                    knight_ability = False
+                    knight_ability = monster_attacks(knight_ability, creature, hero)
 
 
 def check_for_treasures(room):
@@ -322,7 +330,7 @@ def check_for_treasures(room):
         room.treasure_list = []
         room.set_room_symbol()
     else:
-        print('Inga skatter i rummet')
+        print('\nInga skatter i rummet')
 
 
 def check_for_monsters(hero, grid_size, game_board, room_list, room):
