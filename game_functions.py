@@ -84,8 +84,8 @@ def clean_list(element_list):
 def get_monster_list():
     """Generates a list with potential monsters based on their commonness"""
 
-    monster_list = [generate_monster(20, 'Jättespindel', random.randint(1, 100)),
-                    generate_monster(15, 'Skelett', random.randint(1, 100)),
+    monster_list = [generate_monster(100, 'Jättespindel', random.randint(1, 100)),
+                    generate_monster(100, 'Skelett', random.randint(1, 100)),
                     generate_monster(10, 'Orc', random.randint(1, 100)),
                     generate_monster(5, 'Troll', random.randint(1, 100))]
 
@@ -194,9 +194,6 @@ def dead_message(hero):
             input('-- Tyck på valfri tangent för att fortsätta --')
 
 
-
-
-
 def delay_in_fight():
 
     print('\n.')
@@ -215,10 +212,22 @@ def did_monster_die(monster, room, game_board, hero, grid_size, room_list):
 
 
 def check_for_living_monsters(room, game_board, hero, grid_size, room_list):
+
+    monsters_alive = []
     for monster in room.monster_list:
+        print(f"monster: {monster.name}, Resistance: {monster.resistance}")
+
         if monster.resistance > 0:
-            return True
-        return False
+            monsters_alive.append(monster)
+
+    if len(monsters_alive) == 0:
+        main.clear_screen()
+        room.monster_list = []
+        main.print_board(game_board, hero)
+        print('\nAlla monster besegrade!')
+
+        check_for_treasures(room)
+        main.walk_on_board(hero, grid_size, game_board, room_list)
 
 
 def start_fight_message(monster_list):
@@ -292,26 +301,17 @@ def fight(hero, grid_size, game_board, room_list, room):
 
                             monster = monster_list[current_monster]
                             if monster.resistance == 0:
-
                                 try:
                                     current_monster += 1
                                     monster = monster_list[current_monster]
                                 except IndexError:
-                                    pass
+                                    living_monster_remains = check_for_living_monsters(room, game_board, hero, grid_size, room_list)
 
                             attack_func(hero, monster, hero)
                             did_monster_die(monster, room, game_board, hero, grid_size, room_list)
                             living_monster_remains = check_for_living_monsters(room, game_board, hero, grid_size, room_list)
 
-                            if not living_monster_remains:
-                                main.clear_screen()
-                                room.monster_list = []
-                                main.print_board(game_board, hero)
-                                print('\nAlla monster besegrade!')
 
-                                check_for_treasures(room)
-                                main.print_board(game_board, hero)
-                                main.walk_on_board(hero, grid_size, game_board, room_list)
                             break
 
                         elif menu_choice == "2":
