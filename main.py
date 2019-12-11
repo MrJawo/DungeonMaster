@@ -201,7 +201,7 @@ def board_size_choice(hero):
             return menu_choice
         else:
             print("\n-- Felaktig input, ange en siffra från menyn. --")
-            input('-- Tyck på valfri tangent för att fortsätta --')
+            input('-- Tyck på enter för att fortsätta --')
 
 
 def choose_character(character_name):
@@ -229,7 +229,7 @@ def choose_character(character_name):
             return hero
         else:
             print("\n-- Felaktig input, ange en siffra från menyn. --")
-            input('-- Tyck på valfri tangent för att fortsätta --')
+            input('-- Tyck på enter för att fortsätta --')
 
 
 def exit_map(game_board, start_coordinates, hero):
@@ -247,7 +247,7 @@ def exit_map(game_board, start_coordinates, hero):
             return False
         else:
             print("\n-- Felaktig input, ange en siffra från menyn. --")
-            input('-- Tyck på valfri tangent för att fortsätta --')
+            input('-- Tyck på enter för att fortsätta --')
 
             print_board(game_board, hero)
 
@@ -307,7 +307,7 @@ def main_menu():
             break
         else:
             print("\n-- Felaktig input, ange en siffra från menyn. --")
-            input('-- Tyck på valfri tangent för att fortsätta --')
+            input('-- Tyck på enter för att fortsätta --')
 
 
 if __name__ == '__main__':
