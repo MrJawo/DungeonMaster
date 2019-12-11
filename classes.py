@@ -11,6 +11,10 @@ class Creature:
         self.resistance = 0
         self.attack = 0
         self.agility = 0
+        self.is_alive = True
+
+    def died(self):
+        self.is_alive = False
 
 
     def initiative_sum(self):
@@ -70,6 +74,18 @@ class Monster(Creature):
     def __init__(self):
         super().__init__()
 
+    def heal_remaining_monster(self):
+
+        if self.name == "Jättespindel":
+            self.resistance = 1
+        elif self.name == "Skelett":
+            self.resistance = 2
+        elif self.name == "Orc":
+            self.resistance = 3
+        elif self.name == "Troll":
+            self.resistance = 4
+
+
 
     def add_giant_spider(self):
 
@@ -110,12 +126,14 @@ class Rooms:
         self.coordinates = (0, 0)
         self.monster_list = []
         self.treasure_list = []
+        self.sum_of_treasures = 0
         self.symbol = "[ ]"
         self.exit = False
 
     def generate_room_content(self):
         self.monster_list = game_functions.get_monster_list()
         self.treasure_list = game_functions.get_treasures()
+        self.calc_sum_of_treasures()
 
     def set_room_symbol(self):
         self.symbol = "[.]"
@@ -123,19 +141,16 @@ class Rooms:
     def set_start_room_symbol(self):
         self.symbol = "[O]"
 
+    def calc_sum_of_treasures(self):
+        treasure_sum = 0
+        for treasure in self.treasure_list:
+            treasure_sum += treasure[1]
+        self.sum_of_treasures = treasure_sum
+
     def remove_dead_monsters(self):
         for monster in self.monster_list:
             if monster.resistance == 0:
                 self.monster_list.remove(monster)
 
-    def heal_remaining_monster(self):
-        for monster in self.monster_list:
-            if monster.name == "Jättespindel":
-                monster.resistance = 1
-            if monster.name == "Skelett":
-                monster.resistance = 2
-            if monster.name == "Orc":
-                monster.resistance = 3
-            if monster.name == "Troll":
-                monster.resistance = 4
+
 

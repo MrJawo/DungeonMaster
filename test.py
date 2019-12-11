@@ -3,6 +3,7 @@ import main
 import game_functions
 import classes
 
+
 class TestCases(unittest.TestCase):
     def test_make_board(self):
         expected_result = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]']]
@@ -51,10 +52,12 @@ class TestCases(unittest.TestCase):
         room = classes.Rooms()
         room_list = [room]
 
-        actual_result1 = main.start_position(choice1, grid_size, room_list)
-        actual_result2 = main.start_position(choice2, grid_size, room_list)
-        actual_result3 = main.start_position(choice3, grid_size, room_list)
-        actual_result4 = main.start_position(choice4, grid_size, room_list)
+        hero = classes.Hero("Orvar", "Riddare")
+
+        actual_result1 = main.start_position(choice1, grid_size, room_list, hero)
+        actual_result2 = main.start_position(choice2, grid_size, room_list, hero)
+        actual_result3 = main.start_position(choice3, grid_size, room_list, hero)
+        actual_result4 = main.start_position(choice4, grid_size, room_list, hero)
 
         self.assertEqual(expected_result1, actual_result1)
         self.assertEqual(expected_result2, actual_result2)
@@ -62,7 +65,6 @@ class TestCases(unittest.TestCase):
         self.assertEqual(expected_result4, actual_result4)
 
     def test_place_hero(self):
-
 
         coordinates1 = (0,0)
         coordinates2 = (0,3)
@@ -142,29 +144,25 @@ class TestCases(unittest.TestCase):
         class Creatures:
             def __init__(self, initiative_dice_sum):
                 self.initiative_dice_sum = initiative_dice_sum
+
         creature_1 = Creatures(9)
         creature_2 = Creatures(18)
         creature_3 = Creatures(16)
+
+        tuple_list = [(creature_1, creature_1.initiative_dice_sum),
+                      (creature_2, creature_2.initiative_dice_sum),
+                       (creature_3, creature_3.initiative_dice_sum)]
 
         character_list = [creature_1, creature_2, creature_3]
         expected_result = [(creature_2, 18), (creature_3, 16), (creature_1, 9)]
-        actual_result = game_functions.bubble_sort(character_list)
+        actual_result = game_functions.bubble_sort(character_list, tuple_list)
         self.assertEqual(expected_result, actual_result)
 
-    def test_sort_turn_list(self):
+    def test_strip_tuple_list(self):
 
-        class Creatures:
-            def __init__(self, initiative_dice_sum):
-                self.initiative_dice_sum = initiative_dice_sum
-
-        creature_1 = Creatures(9)
-        creature_2 = Creatures(18)
-        creature_3 = Creatures(16)
-
-        character_list = [creature_1, creature_2, creature_3]
-        expected_result = [creature_2, creature_3, creature_1]
-
-        actual_result = game_functions.sort_turn_list(character_list)
+        tuple_list = [(1, 2), (1, 2)]
+        expected_result = [1, 1]
+        actual_result = game_functions.strip_tuple_list(tuple_list)
         self.assertEqual(expected_result, actual_result)
 
     def test_dice(self):
@@ -340,7 +338,7 @@ class TestCases(unittest.TestCase):
         room = classes.Rooms()
         room.monster_list = [monster_1]
 
-        room.heal_remaining_monster()
+        monster_1.heal_remaining_monster()
         expected_result = 2
         monster_1 = room.monster_list[0]
         actual_result = monster_1.resistance
