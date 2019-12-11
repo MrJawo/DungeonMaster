@@ -74,6 +74,17 @@ class Monster(Creature):
     def __init__(self):
         super().__init__()
 
+    def heal_remaining_monster(self):
+
+        if self.name == "Jättespindel":
+            self.resistance = 1
+        elif self.name == "Skelett":
+            self.resistance = 2
+        elif self.name == "Orc":
+            self.resistance = 3
+        elif self.name == "Troll":
+            self.resistance = 4
+
 
 
     def add_giant_spider(self):
@@ -134,15 +145,6 @@ class Rooms:
             if monster.resistance == 0:
                 self.monster_list.remove(monster)
 
-    def heal_remaining_monster(self):
-        for monster in self.monster_list:
-            if monster.name == "Jättespindel":
-                monster.resistance = 1
-            if monster.name == "Skelett":
-                monster.resistance = 2
-            if monster.name == "Orc":
-                monster.resistance = 3
-            if monster.name == "Troll":
-                monster.resistance = 4
+
 
 

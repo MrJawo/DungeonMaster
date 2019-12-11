@@ -262,18 +262,6 @@ def main_menu_choice(menu_choice):
             print_board(game_board, hero)
             walk_on_board(hero, grid_size, game_board, room_list)
 
-            # #Test för att se om det är några monter/skatter i varje rum. Testa om ni vill :)
-            # for room in room_list:
-            #     print()
-            #     print(f"Room: {room.coordinates}")
-            #     i = 1
-            #     for monster in room.monster_list:
-            #         print(f"Monster {i}: {monster.name}")
-            #         i += 1
-            #     if len(room.treasure_list) > 0:
-            #         print(f"Treasures: {room.treasure_list}")
-            #     print()
-
 
 def main_menu():
     while True:

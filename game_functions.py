@@ -84,8 +84,8 @@ def clean_list(element_list):
 def get_monster_list():
     """Generates a list with potential monsters based on their commonness"""
 
-    monster_list = [generate_monster(100, 'Jättespindel', random.randint(1, 100)),
-                    generate_monster(100, 'Skelett', random.randint(1, 100)),
+    monster_list = [generate_monster(20, 'Jättespindel', random.randint(1, 100)),
+                    generate_monster(15, 'Skelett', random.randint(1, 100)),
                     generate_monster(10, 'Orc', random.randint(1, 100)),
                     generate_monster(5, 'Troll', random.randint(1, 100))]
 
@@ -179,6 +179,7 @@ def dead_message(hero):
 
         print(f"\n{hero.name} har dött.")
         print("Du samlade på dig ", hero.points_current_game, " poäng.")
+        print("Totalt ", hero.points_current_game, " poäng.")
         hero.update_total_points()
 
         print("\n[1] - Main menu\n"
@@ -232,7 +233,6 @@ def check_for_living_monsters(room, game_board, hero, grid_size, room_list):
 
 def start_fight_message(monster_list):
 
-    print("\n[Dungeon Run]")
     print(f"\nDu gick in i ett rum med {len(monster_list)} monster:")
     i = 1
     for monster in monster_list:
@@ -262,6 +262,19 @@ def monster_attacks(knight_ability, creature, hero):
         return False
 
 
+def escape_monster(hero):
+
+    if hero.name == "Trollkarl":
+        threshold = 8 * 10
+    else:
+        threshold = hero.agility * 10
+    num = random.randint(1, 100)
+    if threshold >= num:
+        return True
+    else:
+        return False
+
+
 def fight(hero, grid_size, game_board, room_list, room):
 
     main.clear_screen()
@@ -281,14 +294,13 @@ def fight(hero, grid_size, game_board, room_list, room):
     i = 1
     for creature in creature_list:
         print(f"{i}. {creature.name}")
+        i += 1
 
     input('\n-- Tryck på valfri knapp för att fortsätta --')
 
     while True:
         for creature in creature_list:
             if creature.is_alive:
-                main.clear_screen()
-                main.print_hero_stats(hero)
 
                 if creature.name == hero.name:
                     while True:
@@ -305,20 +317,45 @@ def fight(hero, grid_size, game_board, room_list, room):
                                     current_monster += 1
                                     monster = monster_list[current_monster]
                                 except IndexError:
-                                    living_monster_remains = check_for_living_monsters(room, game_board, hero, grid_size, room_list)
+                                    check_for_living_monsters(room, game_board, hero, grid_size, room_list)
 
                             attack_func(hero, monster, hero)
                             did_monster_die(monster, room, game_board, hero, grid_size, room_list)
-                            living_monster_remains = check_for_living_monsters(room, game_board, hero, grid_size, room_list)
+                            check_for_living_monsters(room, game_board, hero, grid_size, room_list)
 
 
                             break
 
                         elif menu_choice == "2":
-                            pass
+
+                            print(f"\n{hero.name} Försöker att fly...")
+                            escape_try = escape_monster(hero)
+                            delay_in_fight()
+                            if escape_try:
+                                print('\nDu lyckades fly från monstret')
+                                game_board[hero.coordinates[0]][hero.coordinates[1]] = '[ ]'
+                                hero.coordinates = hero.previous_coordinates
+                                main.place_hero(hero.coordinates, game_board)
+                                input('\n-- Tryck på valfri knapp för att fortsätta --')
+
+                                for monster in monster_list:
+                                    if monster.resistance > 0:
+                                        monster.heal_remaining_monster()
+                                    else:
+                                        room.remove_dead_monsters()
+
+                                main.print_board(game_board,hero)
+                                main.walk_on_board(hero, grid_size, game_board, room_list)
+
+                            else:
+                                print(f'\n{hero.name} lyckades inte fly ')
+                                input('\n-- Tryck på valfri knapp för att fortsätta --')
+                                break
+
                         else:
                             print("\n-- Felaktig input, ange en siffra från menyn. --")
                             input('-- Tyck på valfri tangent för att fortsätta --')
+
                 else:
                     knight_ability = monster_attacks(knight_ability, creature, hero)
 
