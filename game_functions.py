@@ -194,16 +194,7 @@ def dead_message(hero):
             input('-- Tyck på valfri tangent för att fortsätta --')
 
 
-def check_for_living_monsters(room, game_board, hero, grid_size, room_list):
-    if len(room.monster_list) == 0:
-        main.clear_screen()
-        room.monster_list = []
-        main.print_board(game_board, hero)
-        print('\nAlla monster besegrade!')
 
-        check_for_treasures(room)
-        main.print_board(game_board, hero)
-        main.walk_on_board(hero, grid_size, game_board, room_list)
 
 
 def delay_in_fight():
@@ -221,7 +212,13 @@ def did_monster_die(monster, room, game_board, hero, grid_size, room_list):
         print(f"\n{monster.name} dog!")
         monster.died()
         input('\n-- Tryck på valfri knapp för att fortsätta --')
-        check_for_living_monsters(room, game_board, hero, grid_size, room_list)
+
+
+def check_for_living_monsters(room, game_board, hero, grid_size, room_list):
+    for monster in room.monster_list:
+        if monster.resistance > 0:
+            return True
+        return False
 
 
 def start_fight_message(monster_list):
@@ -247,6 +244,7 @@ def monster_attacks(knight_ability, creature, hero):
             dead_message(hero)
         return False
     else:
+        print(f"\n{creature.name} attackerar {hero.name}!")
         delay_in_fight()
         main.clear_screen()
         main.print_hero_stats(hero)
@@ -255,17 +253,17 @@ def monster_attacks(knight_ability, creature, hero):
         return False
 
 
-def fight(monster_list, hero, grid_size, game_board, room_list, room):
+def fight(hero, grid_size, game_board, room_list, room):
 
     main.clear_screen()
-    start_fight_message(monster_list)
 
     knight_ability = False
     if hero.hero_class == "Riddare":
         knight_ability = True
 
-    monster_list = monster_list
-    creature_list = monster_list
+    monster_list = room.monster_list
+    start_fight_message(monster_list)
+    creature_list = monster_list.copy()
     creature_list.append(hero)
     creature_list = sort_turn_list(creature_list)
     current_monster = 0
@@ -279,9 +277,7 @@ def fight(monster_list, hero, grid_size, game_board, room_list, room):
 
     while True:
         for creature in creature_list:
-
             if creature.is_alive:
-
                 main.clear_screen()
                 main.print_hero_stats(hero)
 
@@ -296,15 +292,26 @@ def fight(monster_list, hero, grid_size, game_board, room_list, room):
 
                             monster = monster_list[current_monster]
                             if monster.resistance == 0:
+
                                 try:
                                     current_monster += 1
                                     monster = monster_list[current_monster]
                                 except IndexError:
                                     pass
 
-
                             attack_func(hero, monster, hero)
                             did_monster_die(monster, room, game_board, hero, grid_size, room_list)
+                            living_monster_remains = check_for_living_monsters(room, game_board, hero, grid_size, room_list)
+
+                            if not living_monster_remains:
+                                main.clear_screen()
+                                room.monster_list = []
+                                main.print_board(game_board, hero)
+                                print('\nAlla monster besegrade!')
+
+                                check_for_treasures(room)
+                                main.print_board(game_board, hero)
+                                main.walk_on_board(hero, grid_size, game_board, room_list)
                             break
 
                         elif menu_choice == "2":
@@ -335,7 +342,7 @@ def check_for_treasures(room):
 
 def check_for_monsters(hero, grid_size, game_board, room_list, room):
     if len(room.monster_list) > 0:
-        fight(room.monster_list, hero, grid_size, game_board, room_list, room)
+        fight(hero, grid_size, game_board, room_list, room)
     else:
         print('\nInga monster i rummet')
 
