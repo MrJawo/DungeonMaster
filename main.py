@@ -3,6 +3,17 @@ import game_functions
 from os import system, name
 
 
+def position_numbers(hero):
+    numbers = hero.points_current_game
+    string_numbers = str(numbers)
+    string_length = len(string_numbers)
+    number_of_spaces = 14 - string_length
+    spaces = ""
+    for i in range(number_of_spaces):
+        spaces += " "
+    return f"{spaces}{string_numbers}"
+
+
 def clear_screen():
     if name == 'nt':
         _ = system('cls')
@@ -13,13 +24,24 @@ def clear_screen():
 
 def get_character_name():
     clear_screen()
+    print("__________________________________________________________")
+    print("\nInitiativ   Tålighet    Attack  Smidighet   Insamlad skatt")
+    print("        0          0         0          0                0")
+    print("__________________________________________________________")
+
     character_name = input("\nSkriv in namnet på din nya karaktär: ")
     return character_name.title()
 
 
 # Läser in och skriver ut printar text från textfil med karaktärerna och dess attribut.
-def new_game_text():
-    clear_screen()
+def new_game_text(character_name):
+
+    print("__________________________________________________________")
+    print(f"{character_name}")
+    print("Initiativ   Tålighet    Attack  Smidighet   Insamlad skatt")
+    print("        0          0         0          0                0")
+    print("__________________________________________________________")
+
     with open('introtext.txt', 'r', encoding="utf-8") as f:
         print(f.read())
 
@@ -36,11 +58,13 @@ def print_board(game_board, hero):
 def print_hero_stats(hero):
     """Prints hero stats"""
 
-    print("\n__________________________________________")
+    number_string = position_numbers(hero)
+
+    print("__________________________________________________________")
     print(f"{hero.name} ({hero.hero_class})")
-    print(f"Initiativ   Tålighet    Attack  Smidighet")
-    print(f"        {hero.initiative}          {hero.resistance}         {hero.attack}          {hero.agility}")
-    print("__________________________________________")
+    print(f"Initiativ   Tålighet    Attack  Smidighet   Insamlad skatt")
+    print(f"        {hero.initiative}          {hero.resistance}         {hero.attack}          {hero.agility}   {number_string}")
+    print("__________________________________________________________")
 
 
 def place_hero(coordinates, game_board):
@@ -164,9 +188,10 @@ def get_grid_size(menu_choice):
         return 8
 
 
-def board_size_choice():
+def board_size_choice(hero):
     while True:
         clear_screen()
+        print_hero_stats(hero)
 
         print("\n[1] - Liten (4x4)")
         print("[2] - Mellan (5x5)")
@@ -183,7 +208,7 @@ def choose_character(character_name):
 
     while True:
         clear_screen()
-        new_game_text()
+        new_game_text(character_name)
         print("\n[1] - Riddaren\n"
               "[2] - Trollkarlen\n"
               "[3] - Tjuven")
@@ -199,7 +224,7 @@ def choose_character(character_name):
             hero.add_wizard()
             return hero
         elif character_choice == "3":
-            hero = classes.Hero(character_name, "Thief")
+            hero = classes.Hero(character_name, "Tjuv")
             hero.add_thief()
             return hero
         else:
@@ -207,18 +232,25 @@ def choose_character(character_name):
             input('-- Tyck på valfri tangent för att fortsätta --')
 
 
-def exit_map(game_board, start_coordinates):
+def exit_map(game_board, start_coordinates, hero):
     exit_choice = ''
 
-    if game_board[start_coordinates[0]][start_coordinates[1]] == '[x]':
-        print("\nRummet innehåller en utgång\n\n"
-                        "[1] - Lämna kartan\n"
-                        "[2] - Stanna kvar")
-        exit_choice = input("\nSkriv in ditt val: ")
-    if exit_choice == '1':
-        return True
-    elif exit_choice == '2':
-        return False
+    while True:
+        if game_board[start_coordinates[0]][start_coordinates[1]] == '[x]':
+            print("\nRummet innehåller en utgång\n\n"
+                            "[1] - Lämna kartan\n"
+                            "[2] - Stanna kvar")
+            exit_choice = input("\nSkriv in ditt val: ")
+        if exit_choice == '1':
+            return True
+        elif exit_choice == '2':
+            return False
+        else:
+            print("\n-- Felaktig input, ange en siffra från menyn. --")
+            input('-- Tyck på valfri tangent för att fortsätta --')
+
+            print_board(game_board, hero)
+
 
 
 def create_rooms(grid_size):
@@ -241,7 +273,6 @@ def walk_on_board(hero, grid_size, game_board, room_list):
         current_coordinates = coordinates_list[0]
         hero.update_coordinates(current_coordinates)
         update_board(game_board, coordinates_list, hero.start_coordinates)
-        print_board(game_board, hero)
         game_functions.check_room(current_coordinates, room_list, hero, game_board, hero.start_coordinates, grid_size)
 
 
@@ -251,7 +282,7 @@ def main_menu_choice(menu_choice):
         if menu_choice == "1":
             character_name = get_character_name()
             hero = choose_character(character_name)
-            size_choice = board_size_choice()
+            size_choice = board_size_choice(hero)
             grid_size = get_grid_size(size_choice)
             game_board = make_board(grid_size)
             room_list = create_rooms(grid_size)

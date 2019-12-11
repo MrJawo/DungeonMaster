@@ -127,18 +127,26 @@ class Rooms:
         self.coordinates = (0, 0)
         self.monster_list = []
         self.treasure_list = []
+        self.sum_of_treasures = 0
         self.symbol = "[ ]"
         self.exit = False
 
     def generate_room_content(self):
         self.monster_list = game_functions.get_monster_list()
         self.treasure_list = game_functions.get_treasures()
+        self.calc_sum_of_treasures()
 
     def set_room_symbol(self):
         self.symbol = "[.]"
 
     def set_start_room_symbol(self):
         self.symbol = "[O]"
+
+    def calc_sum_of_treasures(self):
+        treasure_sum = 0
+        for treasure in self.treasure_list:
+            treasure_sum += treasure[1]
+        self.sum_of_treasures = treasure_sum
 
     def remove_dead_monsters(self):
         for monster in self.monster_list:
