@@ -1,28 +1,28 @@
 
 
-Du kommer nu få välja vilken spelkaraktär du vill ha.
-Karaktärerna har olika attributvärden och varsin specialförmåga som påverkar din karaktär i strider.
-Attributena är initiativ, tålighet, attack och smidighet.
-Värdena är mellan 1-9 där 1 är sämsta värdet och 9 är det högsta.
+Du kommer nu fÃ¥ vÃ¤lja vilken spelkaraktÃ¤r du vill ha.
+KaraktÃ¤rerna har olika attributvÃ¤rden och varsin specialfÃ¶rmÃ¥ga som 
+pÃ¥verkar din karaktÃ¤r i strider.
+Attributena Ã¤r initiativ, tÃ¥lighet, attack och smidighet.
+VÃ¤rdena Ã¤r mellan 1-9 dÃ¤r 1 Ã¤r sÃ¤msta vÃ¤rdet och 9 Ã¤r det hÃ¶gsta.
 
-Här är dina val:
+HÃ¤r Ã¤r dina val:
 _____________________________________________________________________
 1. RIDDAREN
-	Initiativ: 5	Tålighet 9	Attack: 6	Smidighet: 4
+	Initiativ: 5	TÃ¥lighet 9	Attack: 6	Smidighet: 4
 
-Specialförmåga: Sköldblock. Riddaren blockerar alltid första attacken
-per strid med sin sköld, och behöver därför varken undvika eller ta
-någon skada.
+SpecialfÃ¶rmÃ¥ga: SkÃ¶ldblock. Riddaren blockerar alltid fÃ¶rsta attacken
+per strid med sin skÃ¶ld, och behÃ¶ver dÃ¤rfÃ¶r varken undvika eller ta
+nÃ¥gon skada.
 _____________________________________________________________________
 2. TROLLKARLEN
-	Initiativ: 6	Tålighet: 4	Attack: 9	Smidighet: 5
+	Initiativ: 6	TÃ¥lighet: 4	Attack: 9	Smidighet: 5
 
-Specialförmåga: Ljussken. Trollkarlen kan göra monster blinda och har
-därför alltid 80% chans att fly från strider.
+SpecialfÃ¶rmÃ¥ga: Ljussken. Trollkarlen kan gÃ¶ra monster blinda och har
+dÃ¤rfÃ¶r alltid 80% chans att fly frÃ¥n strider.
 _____________________________________________________________________
 3. TJUVEN
-	Initiativ: 7	Tålighet: 5	Attack: 5	Smidighet: 7
+	Initiativ: 7	TÃ¥lighet: 5	Attack: 5	Smidighet: 7
 
-Specialförmåga: Kritisk träff. Tjuven har 25% chans att göra dubbel 
-skada varje gång tjuven attackerar.
-_____________________________________________________________________
+SpecialfÃ¶rmÃ¥ga: Kritisk trÃ¤ff. Tjuven har 25% chans att gÃ¶ra dubbel 
+skada varje gÃ¥ng tjuven attackerar.
