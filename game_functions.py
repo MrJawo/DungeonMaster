@@ -135,3 +135,15 @@ def attack_func(attacker, defender):
         print("Attack lyckades")
     else:
         print("Attack misslyckades")
+
+def dead_message(hero):
+    print(hero.name + " dog.")
+    print("Du samlade på dig ", hero.points, " poäng.")
+    print("\n[1] - Main menu\n"
+              "[2] - Avsluta spelet")
+    choice = input()
+    if choice == "1":
+        main_menu()
+    elif choice == "2":
+        exit()
+    
