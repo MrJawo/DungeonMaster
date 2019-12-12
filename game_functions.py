@@ -381,7 +381,12 @@ def fight(hero, grid_size, game_board, room_list, room):
 
 
 def check_for_treasures(room,hero, game_board, monsters_in_room):
-    hero.update_current_points(room.sum_of_treasures)
+
+    t_sum = 0
+    for treasure in room.treasure_list:
+        t_sum += treasure[1]
+    hero.points_current_game += t_sum
+
     main.print_board(game_board, hero)
 
     if len(room.treasure_list) > 0:
@@ -438,10 +443,11 @@ def undiscovered_room(room, hero, room_list, game_board, grid_size):
 
 def save_collected_treasure(hero):
 
-    print(f"{hero.name} samlade på sig ", hero.points_current_game, " poäng.")
+    main.print_hero_stats(hero)
+    print(f"\n{hero.name} samlade på sig {hero.points_current_game} poäng.")
     hero.update_total_points()
-    print("Totalt insamlat är ", hero.point, " poäng.")
-
+    print(f"Totalt insamlat är {hero.point} poäng.")
+    input('\n-- Tryck på enter för att fortsätta --')
 
 def check_room(coordinates, room_list, hero, game_board, start_coordinates, grid_size):
 
@@ -455,6 +461,7 @@ def check_room(coordinates, room_list, hero, game_board, start_coordinates, grid
                 if exit_to_menu:
                     main.clear_screen()
                     save_collected_treasure(hero)
+
                     main.main_menu()
             elif room.symbol == "[.]":
                 main.print_board(game_board, hero)
