@@ -39,9 +39,6 @@ def get_character_name():
             input('-- Tyck på valfri tangent för att fortsätta --')
 
 
-
-
-
 # Läser in och skriver ut printar text från textfil med karaktärerna och dess attribut.
 def new_game_text(character_name):
 
@@ -301,6 +298,10 @@ def main_menu_choice(menu_choice):
             place_hero(start_coordinates, game_board)
             print_board(game_board, hero)
             walk_on_board(hero, grid_size, game_board, room_list)
+        elif menu_choice == "2":
+            pass
+        else:
+            exit()
 
 
 def main_menu():
