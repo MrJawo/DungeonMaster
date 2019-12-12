@@ -298,6 +298,8 @@ def hero_flee(hero, game_board, monster_list, room, grid_size, room_list):
     escape_try = escape_monster(hero)
     delay_in_fight()
     if escape_try:
+        if hero.hero_class == "Trollkarl":
+            print()
         print('\nDu lyckades fly från monstret')
         game_board[hero.coordinates[0]][hero.coordinates[1]] = '[ ]'
         hero.coordinates = hero.previous_coordinates
