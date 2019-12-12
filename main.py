@@ -22,14 +22,24 @@ def clear_screen():
 
 
 def get_character_name():
-    clear_screen()
-    print("__________________________________________________________")
-    print("\nInitiativ   Tålighet    Attack  Smidighet   Insamlad skatt")
-    print("        0          0         0          0                0")
-    print("__________________________________________________________")
+    while True:
 
-    character_name = input("\nSkriv in namnet på din nya karaktär: ")
-    return character_name.title()
+        clear_screen()
+        print("__________________________________________________________")
+        print("\nInitiativ   Tålighet    Attack  Smidighet   Insamlad skatt")
+        print("        0          0         0          0                0")
+        print("__________________________________________________________")
+
+        character_name = input("\nSkriv in namnet på din nya karaktär: ")
+        character_name = character_name.strip(" ")
+        if len(character_name) > 0:
+            return character_name.title()
+        else:
+            print('\nAnvändarnamnet måste innehålla minst ett tecken\n')
+            input('-- Tyck på valfri tangent för att fortsätta --')
+
+
+
 
 
 # Läser in och skriver ut printar text från textfil med karaktärerna och dess attribut.
