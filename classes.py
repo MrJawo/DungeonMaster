@@ -86,7 +86,6 @@ class Monster(Creature):
             self.resistance = 4
 
 
-
     def add_giant_spider(self):
 
         self.name = "Jättespindel"

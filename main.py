@@ -2,7 +2,6 @@ import classes
 import game_functions
 from os import system, name
 
-
 def position_numbers(hero):
     numbers = hero.points_current_game
     string_numbers = str(numbers)

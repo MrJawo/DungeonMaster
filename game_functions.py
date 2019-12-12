@@ -104,6 +104,7 @@ def bubble_sort(character_list, tuple_list):
 
     return tuple_list
 
+
 def strip_tuple_list(tuple_list):
     """Strips tuple of second element"""
 
@@ -138,6 +139,7 @@ def dice(number_of_dices):
 
 
 def hero_ability(hero):
+    """Returns true or false if special ability works or not"""
     if hero.hero_class == "Trollkarl":
         wizard_num = 80
         r1 = random.randint(1, 100)
@@ -155,6 +157,8 @@ def hero_ability(hero):
 
 
 def attack_func(attacker, defender, hero):
+    """Attack function for all creatures"""
+
     attack = dice(attacker.attack)
     defend = dice(defender.agility)
 
@@ -185,9 +189,7 @@ def dead_message(hero):
         main.clear_screen()
 
         print(f"\n{hero.name} har dött.")
-        print("Du samlade på dig ", hero.points_current_game, " poäng.")
-        print("Totalt ", hero.points_current_game, " poäng.")
-        hero.update_total_points()
+        save_collected_treasure(hero)
 
         print("\n[1] - Main menu\n"
                   "[2] - Avsluta spelet")
@@ -221,7 +223,6 @@ def did_monster_die(monster, hero):
         input('\n-- Tryck på enter för att fortsätta --')
 
 
-
 def check_for_living_monsters(room, game_board, hero, grid_size, room_list):
 
     monsters_alive = []
@@ -233,7 +234,6 @@ def check_for_living_monsters(room, game_board, hero, grid_size, room_list):
     if len(monsters_alive) == 0:
         room.monster_list = []
         room.set_room_symbol()
-        hero.points_current_game += room.sum_of_treasures
         room.sum_of_treasures = 0
         main.print_board(game_board, hero)
 
@@ -397,8 +397,10 @@ def check_for_treasures(room,hero, game_board, monsters_in_room):
             print(treasure[0])
             i += treasure[1]
 
+
         print(f'\nTotalt värde: {i}')
         print('Skatten är tillagd i din ryggsäck.')
+
         room.treasure_list = []
         room.set_room_symbol()
     else:
@@ -434,6 +436,13 @@ def undiscovered_room(room, hero, room_list, game_board, grid_size):
     check_for_treasures(room, hero, game_board, monsters_in_room)
 
 
+def save_collected_treasure(hero):
+
+    print(f"{hero.name} samlade på sig ", hero.points_current_game, " poäng.")
+    hero.update_total_points()
+    print("Totalt insamlat är ", hero.point, " poäng.")
+
+
 def check_room(coordinates, room_list, hero, game_board, start_coordinates, grid_size):
 
     for room in room_list:
@@ -444,6 +453,8 @@ def check_room(coordinates, room_list, hero, game_board, start_coordinates, grid
                 main.print_board(game_board, hero)
                 exit_to_menu = main.exit_map(game_board, (start_coordinates[0],start_coordinates[1]), hero)
                 if exit_to_menu:
+                    main.clear_screen()
+                    save_collected_treasure(hero)
                     main.main_menu()
             elif room.symbol == "[.]":
                 main.print_board(game_board, hero)
