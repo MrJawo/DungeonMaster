@@ -2,7 +2,7 @@ import unittest
 import main
 import game_functions
 import classes
-
+import pickle
 
 class TestCases(unittest.TestCase):
     def test_make_board(self):
@@ -343,6 +343,73 @@ class TestCases(unittest.TestCase):
         monster_1 = room.monster_list[0]
         actual_result = monster_1.resistance
         self.assertEqual(expected_result, actual_result)
+
+    def test_heal_hero(self):
+
+        hero1 = classes.Hero('Orvar', 'Riddare')
+        hero1.resistance = 1
+        hero2 = classes.Hero('Orvar', 'Trollkarl')
+        hero2.resistance = 1
+        hero3 = classes.Hero('Orvar', 'Tjuv')
+        hero3.resistance = 1
+
+        hero1.heal_hero()
+        hero2.heal_hero()
+        hero3.heal_hero()
+
+        expected_result1 = 9
+        expected_result2 = 4
+        expected_result3 = 5
+
+        self.assertEqual(expected_result1, hero1.resistance)
+        self.assertEqual(expected_result2, hero2.resistance)
+        self.assertEqual(expected_result3, hero3.resistance)
+
+    def test_get_hero_list(self):
+        hero1 = classes.Hero('Orvar1', 'Riddare')
+        hero2 = classes.Hero('Orvar2', 'Trollkarl')
+        hero3 = classes.Hero('Orvar3', 'Tjuv')
+
+        expected_result = [hero1, hero2, hero3]
+        with open("test_list.pickle", "wb") as file:
+            pickle.dump(expected_result, file)
+
+        actual_result = main.get_hero_list('test_list.pickle')
+        test_hero1 = actual_result[0]
+        test_hero2 = actual_result[1]
+        test_hero3 = actual_result[2]
+
+        self.assertEqual(hero1.name, test_hero1.name)
+        self.assertEqual(hero2.name, test_hero2.name)
+        self.assertEqual(hero3.name, test_hero3.name)
+
+    def test_open__write_pickle_file(self):
+
+        hero1 = classes.Hero('Orvar1', 'Riddare')
+        hero_list = [hero1]
+        main.write_in_pickle_file(hero_list,'test_list.pickle')
+        expected_result = hero1.name
+
+        loaded_list = main.open_pickle_file('test_list.pickle')
+        hero2 = loaded_list[0]
+        self.assertEqual(expected_result, hero2.name)
+
+    def test_update_pickle_hero(self):
+        hero1 = classes.Hero('Orvar1', 'Riddare')
+        hero1.add_knight()
+        hero1.point = 1
+
+        hero_list = [hero1]
+        main.write_in_pickle_file(hero_list, 'test_list.pickle')
+
+        hero1.point = 5
+        main.update_pickle_hero(hero1, 'test_list.pickle')
+
+        hero_list2 = main.open_pickle_file('test_list.pickle')
+        hero2 = hero_list2[0]
+
+        self.assertEqual(5, hero2.point)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,6 +1,7 @@
 import classes
 import game_functions
 from os import system, name
+import pickle
 
 def position_numbers(hero):
     numbers = hero.points_current_game
@@ -13,7 +14,13 @@ def position_numbers(hero):
     return f"{spaces}{string_numbers}"
 
 
+def error_message():
+    print("\n-- Felaktig input, ange en siffra från menyn. --")
+    input('-- Tyck på enter för att fortsätta --')
+
+
 def clear_screen():
+
     if name == 'nt':
         _ = system('cls')
     else:
@@ -24,6 +31,16 @@ def clear_screen():
 def get_character_name():
     while True:
 
+        taken_names = []
+        with open('hero_list.pickle', 'rb') as save_file:
+            hero_list = pickle.load(save_file)
+            for hero in hero_list:
+                taken_names.append(hero.name)
+            taken_names.append('Jättespindel')
+            taken_names.append('Skelett')
+            taken_names.append('Orc')
+            taken_names.append('Troll')
+
         clear_screen()
         print("__________________________________________________________")
         print("\nInitiativ   Tålighet    Attack  Smidighet   Insamlad skatt")
@@ -33,9 +50,14 @@ def get_character_name():
         character_name = input("\nSkriv in namnet på din nya karaktär: ")
         character_name = character_name.strip(" ")
         if len(character_name) > 0:
-            return character_name.title()
+            character_name = character_name.title()
+            if character_name not in taken_names:
+                return character_name
+            else:
+                print('\nAnvändarnamnet är inte tillåtet, pröva ett annat!\n')
+                input('-- Tyck på valfri tangent för att fortsätta --')
         else:
-            print('\nAnvändarnamnet måste innehålla minst ett tecken\n')
+            print('\nAnvändarnamnet måste innehålla minst ett tecken!\n')
             input('-- Tyck på valfri tangent för att fortsätta --')
 
 
@@ -110,9 +132,7 @@ def choose_corner(game_board, hero):
         if start_corner in number_list:
             break
         else:
-            print("\n-- Felaktig input, ange en siffra från menyn. --")
-            input('-- Tyck på valfri tangent för att fortsätta --')
-
+            error_message()
     return start_corner
 
 
@@ -206,8 +226,17 @@ def board_size_choice(hero):
         if menu_choice == "1" or menu_choice == "2" or menu_choice == "3":
             return menu_choice
         else:
-            print("\n-- Felaktig input, ange en siffra från menyn. --")
-            input('-- Tyck på enter för att fortsätta --')
+            error_message()
+
+
+def save_hero(hero):
+
+    hero_list = []
+    with open('hero_list.pickle', 'rb') as file:
+        hero_list = pickle.load(file)
+    hero_list.append(hero)
+    with open('hero_list.pickle', 'wb') as file:
+        pickle.dump(hero_list, file)
 
 
 def choose_character(character_name):
@@ -239,6 +268,8 @@ def choose_character(character_name):
 
 
 def exit_map(game_board, start_coordinates, hero):
+    """Checks if user wants to leave the board"""
+
     exit_choice = ''
 
     while True:
@@ -252,11 +283,8 @@ def exit_map(game_board, start_coordinates, hero):
         elif exit_choice == '2':
             return False
         else:
-            print("\n-- Felaktig input, ange en siffra från menyn. --")
-            input('-- Tyck på enter för att fortsätta --')
-
+            error_message()
             print_board(game_board, hero)
-
 
 
 def create_rooms(grid_size):
@@ -274,6 +302,8 @@ def create_rooms(grid_size):
 
 
 def walk_on_board(hero, grid_size, game_board, room_list):
+    """Makes user walk on board"""
+
     while True:
         coordinates_list = take_step(hero.coordinates, grid_size)
         current_coordinates = coordinates_list[0]
@@ -282,26 +312,103 @@ def walk_on_board(hero, grid_size, game_board, room_list):
         game_functions.check_room(current_coordinates, room_list, hero, game_board, hero.start_coordinates, grid_size)
 
 
+def open_pickle_file(path):
+    """Open pickle file and returns the contained list"""
+
+    with open(path, 'rb') as save_file:
+        hero_list = pickle.load(save_file)
+    return hero_list
+
+
+def write_in_pickle_file(hero_list, path):
+    """Writes in selected pickle file"""
+
+    with open(path, 'wb') as save_file:
+        pickle.dump(hero_list,save_file)
+
+
+def update_pickle_hero(hero, path):
+    """Updates selected hero in pickle file"""
+
+    hero_list = open_pickle_file(path)
+    i = 0
+    for saved_hero in hero_list:
+        if saved_hero.name == hero.name:
+            hero_list.pop(i)
+            hero_list.insert(i, hero)
+        i += 1
+    write_in_pickle_file(hero_list, path)
+
+
+def get_hero_list(path):
+    """Returns a list of object from selected pickle file"""
+
+    with open(path, 'rb') as file:
+        hero_list = pickle.load(file)
+    return hero_list
+
+
+def load_hero():
+    """Returns the selected hero object from pickle file"""
+
+    hero_list = get_hero_list('hero_list.pickle')
+
+    while True:
+        clear_screen()
+        i = 1
+        number_of_hero = []
+        if len(hero_list) > 0:
+            print()
+            for hero in hero_list:
+                print(f'[{i}] - {hero.name} - {hero.hero_class} - Poäng: {hero.point}')
+                number_of_hero.append(str(i))
+                i += 1
+
+            print("[0] - Gå till huvud-menyn")
+            hero_choice = input('\nVälj en hjälte: ')
+            for number in number_of_hero:
+                if hero_choice == number:
+                    hero_index = int(number)-1
+                    return hero_list[hero_index]
+                elif hero_choice == "0":
+                    main_menu()
+                else:
+                    print("\n-- Felaktig input, ange en siffra från menyn. --")
+                    input('-- Tyck på enter för att fortsätta --')
+        else:
+            print("\n Inga hjältar finns sparade än.\n")
+            input('-- Tyck på enter för att fortsätta --')
+            main_menu()
+
+
+def initiate_game(hero):
+    """Initiates a game"""
+
+    size_choice = board_size_choice(hero)
+    grid_size = get_grid_size(size_choice)
+    game_board = make_board(grid_size)
+    room_list = create_rooms(grid_size)
+    start_corner = choose_corner(game_board, hero)
+    start_coordinates = start_position(start_corner, grid_size, room_list, hero)
+    hero.coordinates = start_coordinates
+    place_hero(start_coordinates, game_board)
+    print_board(game_board, hero)
+    walk_on_board(hero, grid_size, game_board, room_list)
+
+
 def main_menu_choice(menu_choice):
     while True:
-
         if menu_choice == "1":
             character_name = get_character_name()
             hero = choose_character(character_name)
-            size_choice = board_size_choice(hero)
-            grid_size = get_grid_size(size_choice)
-            game_board = make_board(grid_size)
-            room_list = create_rooms(grid_size)
-            start_corner = choose_corner(game_board, hero)
-            start_coordinates = start_position(start_corner, grid_size, room_list, hero)
-            hero.coordinates = start_coordinates
-            place_hero(start_coordinates, game_board)
-            print_board(game_board, hero)
-            walk_on_board(hero, grid_size, game_board, room_list)
+            save_hero(hero)
+            initiate_game(hero)
         elif menu_choice == "2":
-            pass
+            hero = load_hero()
+            initiate_game(hero)
         else:
             exit()
+
 
 
 def main_menu():
@@ -316,12 +423,14 @@ def main_menu():
             main_menu_choice(menu_choice)
             break
         else:
-            print("\n-- Felaktig input, ange en siffra från menyn. --")
-            input('-- Tyck på enter för att fortsätta --')
+            error_message()
 
 
 if __name__ == '__main__':
 
+    # start_list = []
+    # with open("hero_list.pickle", "wb") as file:
+    #     pickle.dump(start_list, file)
     while True:
         main_menu()
 

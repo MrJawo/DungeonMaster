@@ -33,6 +33,14 @@ class Hero(Creature):
         self.previous_coordinates = (0, 0)
         self.start_coordinates = (0, 0)
 
+    def heal_hero(self):
+        if self.hero_class == "Riddare":
+            self.resistance = 9
+        elif self.hero_class == "Trollkarl":
+            self.resistance = 4
+        elif self.hero_class == "Tjuv":
+            self.resistance = 5
+
     def update_coordinates(self, new_coordinates):
 
         self.previous_coordinates = self.coordinates
@@ -40,11 +48,9 @@ class Hero(Creature):
 
     def update_total_points(self):
 
-        self.point = self.points_current_game
-        self.points_current_game = 0
+        self.point += self.points_current_game
 
     def update_current_points(self, found_points):
-
         self.points_current_game += found_points
 
     # Function to add a Knight to list.

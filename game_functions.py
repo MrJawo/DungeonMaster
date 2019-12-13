@@ -2,6 +2,7 @@ import random
 import classes
 import main
 from time import sleep
+import pickle
 
 
 def number_sum(int_list):
@@ -155,7 +156,6 @@ def hero_ability(hero):
         else:
             return False
 
-
 def attack_func(attacker, defender, hero):
     """Attack function for all creatures"""
 
@@ -275,6 +275,7 @@ def escape_monster(hero):
         return True
     else:
         return False
+
 
 def hero_attack(hero, monster_list, current_monster, room, game_board, grid_size, room_list):
     main.clear_screen()
@@ -448,6 +449,7 @@ def save_collected_treasure(hero):
     main.print_hero_stats(hero)
     print(f"\n{hero.name} samlade på sig {hero.points_current_game} poäng.")
     hero.update_total_points()
+    hero.points_current_game = 0
     print(f"Totalt insamlat är {hero.point} poäng.")
     input('\n-- Tryck på enter för att fortsätta --')
 
@@ -463,7 +465,8 @@ def check_room(coordinates, room_list, hero, game_board, start_coordinates, grid
                 if exit_to_menu:
                     main.clear_screen()
                     save_collected_treasure(hero)
-
+                    hero.heal_hero()
+                    main.update_pickle_hero(hero, 'hero_list.pickle')
                     main.main_menu()
             elif room.symbol == "[.]":
                 main.print_board(game_board, hero)
