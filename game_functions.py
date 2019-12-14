@@ -198,6 +198,8 @@ def dead_message(hero):
         if choice == "1":
             main.main_menu()
         elif choice == "2":
+            hero.heal_hero()
+            save_collected_treasure(hero)
             exit()
         else:
             print("\n-- Felaktig input, ange en siffra från menyn. --")
@@ -450,6 +452,7 @@ def save_collected_treasure(hero):
     print(f"\n{hero.name} samlade på sig {hero.points_current_game} poäng.")
     hero.update_total_points()
     hero.points_current_game = 0
+    main.update_pickle_hero(hero, "hero_list.pickle")
     print(f"Totalt insamlat är {hero.point} poäng.")
     input('\n-- Tryck på enter för att fortsätta --')
 
@@ -464,9 +467,8 @@ def check_room(coordinates, room_list, hero, game_board, start_coordinates, grid
                 exit_to_menu = main.exit_map(game_board, (start_coordinates[0],start_coordinates[1]), hero)
                 if exit_to_menu:
                     main.clear_screen()
-                    save_collected_treasure(hero)
                     hero.heal_hero()
-                    main.update_pickle_hero(hero, 'hero_list.pickle')
+                    save_collected_treasure(hero)
                     main.main_menu()
             elif room.symbol == "[.]":
                 main.print_board(game_board, hero)

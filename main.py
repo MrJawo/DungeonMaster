@@ -366,15 +366,17 @@ def load_hero():
 
             print("[0] - Gå till huvud-menyn")
             hero_choice = input('\nVälj en hjälte: ')
-            for number in number_of_hero:
-                if hero_choice == number:
-                    hero_index = int(number)-1
-                    return hero_list[hero_index]
-                elif hero_choice == "0":
-                    main_menu()
-                else:
-                    print("\n-- Felaktig input, ange en siffra från menyn. --")
-                    input('-- Tyck på enter för att fortsätta --')
+
+            if hero_choice in number_of_hero:
+                for number in number_of_hero:
+                    if number == hero_choice:
+                        hero_index = int(number)-1
+                        return hero_list[hero_index]
+            elif hero_choice == "0":
+                main_menu()
+            else:
+                print("\n-- Felaktig input, ange en siffra från menyn. --")
+                input('-- Tyck på enter för att fortsätta --')
         else:
             print("\n Inga hjältar finns sparade än.\n")
             input('-- Tyck på enter för att fortsätta --')
@@ -410,7 +412,6 @@ def main_menu_choice(menu_choice):
             exit()
 
 
-
 def main_menu():
     while True:
         clear_screen()
@@ -433,4 +434,3 @@ if __name__ == '__main__':
     #     pickle.dump(start_list, file)
     while True:
         main_menu()
-
