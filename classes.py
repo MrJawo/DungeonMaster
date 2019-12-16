@@ -12,10 +12,10 @@ class Creature:
         self.attack = 0
         self.agility = 0
         self.is_alive = True
+        self.AI = False
 
     def died(self):
         self.is_alive = False
-
 
     def initiative_sum(self):
         self.initiative_dice_sum = game_functions.dice(self.initiative)
@@ -32,6 +32,12 @@ class Hero(Creature):
         self.coordinates = (0, 0)
         self.previous_coordinates = (0, 0)
         self.start_coordinates = (0, 0)
+        self.ai = False
+        self.nbr_of_games = 0
+        self.giant_spider_kills = 0
+        self.troll_kills = 0
+        self.orc_kills = 0
+        self.skeleton_kills = 0
 
     def heal_hero(self):
         if self.hero_class == "Riddare":
@@ -76,6 +82,8 @@ class Hero(Creature):
         self.point = 0
 
 
+
+
 class Monster(Creature):
     def __init__(self):
         super().__init__()
@@ -90,7 +98,6 @@ class Monster(Creature):
             self.resistance = 3
         elif self.name == "Troll":
             self.resistance = 4
-
 
     def add_giant_spider(self):
 
@@ -156,6 +163,3 @@ class Rooms:
         for monster in self.monster_list:
             if monster.resistance == 0:
                 self.monster_list.remove(monster)
-
-
-

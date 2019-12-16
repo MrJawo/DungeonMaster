@@ -2,7 +2,6 @@ import random
 import classes
 import main
 from time import sleep
-import pickle
 
 
 def number_sum(int_list):
@@ -18,14 +17,14 @@ def number_sum(int_list):
 def treasure_sum(treasure_list):
     """Returns the sum of first element in tuple"""
 
-    treasure_sum = 0
+    t_sum = 0
     for treasure in treasure_list:
-        treasure_sum += treasure[1]
-    return treasure_sum
+        t_sum += treasure[1]
+    return t_sum
 
 
 def generate_treasure(chance, treasure_type, treasure_value, random_int):
-    """Returns the a tupl of treasure type and its value if it spawns"""
+    """Returns the a tuple of treasure type and its value if it spawns"""
 
     if random_int <= chance:
         treasure_tuple = (treasure_type, treasure_value)
@@ -128,7 +127,6 @@ def sort_turn_list(character_list):
     return strip_tuple_list(tuple_list)
 
 
-
 def dice(number_of_dices):
     """Generates a number between 1 and 6 the selected amount of times and returns the sum"""
 
@@ -141,6 +139,7 @@ def dice(number_of_dices):
 
 def hero_ability(hero):
     """Returns true or false if special ability works or not"""
+
     if hero.hero_class == "Trollkarl":
         wizard_num = 80
         r1 = random.randint(1, 100)
@@ -156,12 +155,12 @@ def hero_ability(hero):
         else:
             return False
 
+
 def attack_func(attacker, defender, hero):
     """Attack function for all creatures"""
 
     attack = dice(attacker.attack)
     defend = dice(defender.agility)
-
 
     print(f"\n{attacker.name} attackerar {defender.name}!")
     delay_in_fight()
@@ -169,7 +168,10 @@ def attack_func(attacker, defender, hero):
     if attack > defend:
         defender.resistance -= 1
         print(f"\nAttack lyckades! {defender.name} har {defender.resistance} liv kvar.")
-        input('\n-- Tyck på enter för att fortsätta --')
+        if hero.ai:
+            sleep(2)
+        else:
+            input('\n-- Tyck på enter för att fortsätta --')
 
         if attacker.name == hero.name:
             if attacker.hero_class == "Tjuv":
@@ -177,36 +179,45 @@ def attack_func(attacker, defender, hero):
                 if ability_success and defender.resistance > 0:
                     defender.resistance -= 1
                     print(f'\nKritisk träff! Dubbel skada utdelad, {defender.name} har {defender.resistance} liv kvar.')
-                    input('\n-- Tyck på enter för att fortsätta --')
+                    if hero.ai:
+                        sleep(2)
+                    else:
+                        input('\n-- Tyck på enter för att fortsätta --')
 
     else:
         print(f"\nAttack misslyckades!")
-        input('\n-- Tyck på enter för att fortsätta --')
+        if hero.ai:
+            sleep(1)
+        else:
+            input('\n-- Tyck på enter för att fortsätta --')
 
 
 def dead_message(hero):
+    """Handles user choice upon death"""
+
     while True:
         main.clear_screen()
 
         print(f"\n{hero.name} har dött.")
         save_collected_treasure(hero)
+        hero.heal_hero()
+        hero.nbr_of_games += 1
 
-        print("\n[1] - Main menu\n"
-                  "[2] - Avsluta spelet")
+        print("\n[1] - Main menu"
+              "\n[2] - Avsluta spelet")
         choice = input("\nSkriv in ditt val: ")
 
         if choice == "1":
             main.main_menu()
         elif choice == "2":
-            hero.heal_hero()
-            save_collected_treasure(hero)
             exit()
         else:
             print("\n-- Felaktig input, ange en siffra från menyn. --")
-            input('-- Tyck på enter för att fortsätta --')
+            input('-- Tryck på enter för att fortsätta --')
 
 
 def delay_in_fight():
+    """Makes a 1,5 sec delay in action situations"""
 
     print('\n.')
     sleep(0.5)
@@ -217,15 +228,22 @@ def delay_in_fight():
 
 
 def did_monster_die(monster, hero):
+    """Checks if current monster died"""
+
     if monster.resistance == 0:
+        killed_monster_counter(monster, hero)
         main.clear_screen()
         main.print_hero_stats(hero)
         print(f"\n{monster.name} dog!")
         monster.died()
-        input('\n-- Tryck på enter för att fortsätta --')
+        if hero.ai:
+            sleep(2)
+        else:
+            input('\n-- Tryck på enter för att fortsätta --')
 
 
 def check_for_living_monsters(room, game_board, hero, grid_size, room_list):
+    """Checks if any monsters are still alive"""
 
     monsters_alive = []
     for monster in room.monster_list:
@@ -244,6 +262,7 @@ def check_for_living_monsters(room, game_board, hero, grid_size, room_list):
 
 
 def start_fight_message(monster_list, hero):
+    """Prints message every fight beginning"""
 
     print('\nBesegra alla monster för att eventuellt hitta en skatt!')
     print('Du kommer alltid att attackera monstret som är först i listan.\n'
@@ -252,6 +271,7 @@ def start_fight_message(monster_list, hero):
 
 
 def monster_attacks(knight_ability, creature, hero):
+    """Monsters attack turn"""
 
     if not knight_ability:
         attack_func(creature, hero, hero)
@@ -262,11 +282,13 @@ def monster_attacks(knight_ability, creature, hero):
         print(f"\n{creature.name} attackerar {hero.name}!")
         delay_in_fight()
         print(f"\n{hero.name} använder sköldblock och ignorerade attacken!")
-        input('\n-- Tryck på enter för att fortsätta --')
+        if hero.ai is False:
+            input('\n-- Tryck på enter för att fortsätta --')
         return False
 
 
 def escape_monster(hero):
+    """Escape from fight"""
 
     if hero.name == "Trollkarl":
         threshold = 8 * 10
@@ -280,6 +302,8 @@ def escape_monster(hero):
 
 
 def hero_attack(hero, monster_list, current_monster, room, game_board, grid_size, room_list):
+    """Heroes turn to attack"""
+
     main.clear_screen()
     main.print_hero_stats(hero)
 
@@ -296,6 +320,28 @@ def hero_attack(hero, monster_list, current_monster, room, game_board, grid_size
     check_for_living_monsters(room, game_board, hero, grid_size, room_list)
 
 
+def hero_statistics(hero):
+    print("\nStatistik för", hero.name, ":")
+    print("Totalt spelade äventyr: ", hero.nbr_of_games)
+    print("Insamlade skatter: ", hero.point)
+    print("Antal dödade jättespindlar: ", hero.giant_spider_kills)
+    print("Antal dödade skelett: ", hero.skeleton_kills)
+    print("Antal dödade troll: ", hero.troll_kills)
+    print("Antal dödade orcs: ", hero.orc_kills)
+    input('\n-- Tyck på enter för att fortsätta --')
+
+
+def killed_monster_counter(monster, hero):
+    if monster.name == "Jättespindel":
+        hero.giant_spider_kills += 1
+    elif monster.name == "Troll":
+        hero.troll_kills += 1
+    elif monster.name == "Orc":
+        hero.orc_kills += 1
+    elif monster.name == "Skelett":
+        hero.skeleton_kills += 1
+
+
 def hero_flee(hero, game_board, monster_list, room, grid_size, room_list):
     print(f"\n{hero.name} Försöker att fly...")
     escape_try = escape_monster(hero)
@@ -307,7 +353,11 @@ def hero_flee(hero, game_board, monster_list, room, grid_size, room_list):
         game_board[hero.coordinates[0]][hero.coordinates[1]] = '[ ]'
         hero.coordinates = hero.previous_coordinates
         main.place_hero(hero.coordinates, game_board)
-        input('\n-- Tryck på enter för att fortsätta --')
+        if hero.ai:
+            sleep(2)
+        else:
+
+            input('\n-- Tryck på enter för att fortsätta --')
 
         for monster in monster_list:
             if monster.resistance > 0:
@@ -320,16 +370,25 @@ def hero_flee(hero, game_board, monster_list, room, grid_size, room_list):
 
     else:
         print(f'\n{hero.name} lyckades inte fly ')
-        input('\n-- Tryck på enter för att fortsätta --')
+        if hero.ai:
+            sleep(2)
+        else:
+            input('\n-- Tryck på enter för att fortsätta --')
 
 
 def heroes_turn(hero, monster_list, current_monster, room, game_board, grid_size, room_list):
     while True:
-        print(f"\n-{hero.name}s tur-\n\n"
-              f"[1] - Attackera\n"
-              "[2] - Pröva att fly")
+        if hero.ai:
+            if hero.resistance is 1:
+                menu_choice = '2'
+            else:
+                menu_choice = '1'
+        else:
+            print(f"\n-{hero.name}s tur-\n\n"
+                  f"[1] - Attackera\n"
+                  "[2] - Pröva att fly")
 
-        menu_choice = input("\nSkriv in ditt val: ")
+            menu_choice = input("\nSkriv in ditt val: ")
         if menu_choice == "1":
             hero_attack(hero, monster_list, current_monster, room, game_board, grid_size, room_list)
             break
@@ -357,8 +416,10 @@ def set_turn_order(monster_list, hero):
     for creature in creature_list:
         print(f"{i}. {creature.name}")
         i += 1
-
-    input('\n-- Tryck på enter för att fortsätta --')
+    if hero.ai:
+        sleep(2)
+    else:
+        input('\n-- Tryck på enter för att fortsätta --')
     return creature_list
 
 
@@ -407,7 +468,6 @@ def check_for_treasures(room,hero, game_board, monsters_in_room):
             print(treasure[0])
             i += treasure[1]
 
-
         print(f'\nTotalt värde: {i}')
         print('Skatten är tillagd i din ryggsäck.')
 
@@ -433,8 +493,10 @@ def check_for_monsters(hero, grid_size, game_board, room_list, room):
             print(f"{i}. {monster.name}")
             i += 1
         start_fight_message(room.monster_list, hero)
-
-        input('\n-- Tryck på enter för att fortsätta --')
+        if hero.ai:
+            sleep(1)
+        else:
+            input('\n-- Tryck på enter för att fortsätta --')
         fight(hero, grid_size, game_board, room_list, room)
     else:
         return False
@@ -454,7 +516,11 @@ def save_collected_treasure(hero):
     hero.points_current_game = 0
     main.update_pickle_hero(hero, "hero_list.pickle")
     print(f"Totalt insamlat är {hero.point} poäng.")
-    input('\n-- Tryck på enter för att fortsätta --')
+    if hero.ai:
+        sleep(2)
+    else:
+        input('\n-- Tryck på enter för att fortsätta --')
+
 
 def check_room(coordinates, room_list, hero, game_board, start_coordinates, grid_size):
 
@@ -464,7 +530,7 @@ def check_room(coordinates, room_list, hero, game_board, start_coordinates, grid
                 undiscovered_room(room, hero, room_list, game_board, grid_size)
             elif room.symbol == "[O]":
                 main.print_board(game_board, hero)
-                exit_to_menu = main.exit_map(game_board, (start_coordinates[0],start_coordinates[1]), hero)
+                exit_to_menu = main.exit_map(game_board, (start_coordinates[0], start_coordinates[1]), hero)
                 if exit_to_menu:
                     main.clear_screen()
                     hero.heal_hero()

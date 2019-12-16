@@ -4,17 +4,32 @@ import game_functions
 import classes
 import pickle
 
+
 class TestCases(unittest.TestCase):
     def test_make_board(self):
-        expected_result = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]']]
+        expected_result = [['[ ]', '[ ]', '[ ]', '[ ]'],
+                           ['[ ]', '[ ]', '[ ]', '[ ]'],
+                           ['[ ]', '[ ]', '[ ]', '[ ]'],
+                           ['[ ]', '[ ]', '[ ]', '[ ]']]
         actual_result = main.make_board(4)
         self.assertEqual(expected_result, actual_result)
 
-        expected_result = [['[ ]', '[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]']]
+        expected_result = [['[ ]', '[ ]', '[ ]', '[ ]', '[ ]'],
+                           ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]'],
+                           ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]'],
+                           ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]'],
+                           ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]']]
         actual_result = main.make_board(5)
         self.assertEqual(expected_result, actual_result)
 
-        expected_result = [['[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]']]
+        expected_result = [['[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]'],
+                           ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]'],
+                           ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]'],
+                           ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]'],
+                           ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]'],
+                           ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]'],
+                           ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]'],
+                           ['[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]', '[ ]']]
         actual_result = main.make_board(8)
         self.assertEqual(expected_result, actual_result)
 
@@ -44,10 +59,10 @@ class TestCases(unittest.TestCase):
         choice4 = "4"
         grid_size = 4
 
-        expected_result1 = (0,0)
+        expected_result1 = (0, 0)
         expected_result2 = (0, grid_size-1)
         expected_result3 = (grid_size-1, 0)
-        expected_result4 = (grid_size-1, grid_size -1)
+        expected_result4 = (grid_size-1, grid_size - 1)
 
         room = classes.Rooms()
         room_list = [room]
@@ -66,41 +81,57 @@ class TestCases(unittest.TestCase):
 
     def test_place_hero(self):
 
-        coordinates1 = (0,0)
-        coordinates2 = (0,3)
-        coordinates3 = (3,0)
-        coordinates4 = (3,3)
+        coordinates1 = (0, 0)
+        coordinates2 = (0, 3)
+        coordinates3 = (3, 0)
+        coordinates4 = (3, 3)
 
-        expected_result1 = [['[x]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
-                           ['[ ]', '[ ]', '[ ]', '[ ]']]
+        expected_result1 = [['[x]', '[ ]', '[ ]', '[ ]'],
+                            ['[ ]', '[ ]', '[ ]', '[ ]'],
+                            ['[ ]', '[ ]', '[ ]', '[ ]'],
+                            ['[ ]', '[ ]', '[ ]', '[ ]']]
 
-        board = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
+        board = [['[ ]', '[ ]', '[ ]', '[ ]'],
+                 ['[ ]', '[ ]', '[ ]', '[ ]'],
+                 ['[ ]', '[ ]', '[ ]', '[ ]'],
                  ['[ ]', '[ ]', '[ ]', '[ ]']]
 
         actual_result1 = main.place_hero(coordinates1, board)
         self.assertEqual(expected_result1, actual_result1)
 
-        expected_result2 = [['[ ]', '[ ]', '[ ]', '[x]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
-                           ['[ ]', '[ ]', '[ ]', '[ ]']]
+        expected_result2 = [['[ ]', '[ ]', '[ ]', '[x]'],
+                            ['[ ]', '[ ]', '[ ]', '[ ]'],
+                            ['[ ]', '[ ]', '[ ]', '[ ]'],
+                            ['[ ]', '[ ]', '[ ]', '[ ]']]
 
-        board = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
+        board = [['[ ]', '[ ]', '[ ]', '[ ]'],
+                 ['[ ]', '[ ]', '[ ]', '[ ]'],
+                 ['[ ]', '[ ]', '[ ]', '[ ]'],
                  ['[ ]', '[ ]', '[ ]', '[ ]']]
 
         actual_result2 = main.place_hero(coordinates2, board)
         self.assertEqual(expected_result2, actual_result2)
 
-        expected_result3 = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
-                           ['[x]', '[ ]', '[ ]', '[ ]']]
+        expected_result3 = [['[ ]', '[ ]', '[ ]', '[ ]'],
+                            ['[ ]', '[ ]', '[ ]', '[ ]'],
+                            ['[ ]', '[ ]', '[ ]', '[ ]'],
+                            ['[x]', '[ ]', '[ ]', '[ ]']]
 
-        board = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
+        board = [['[ ]', '[ ]', '[ ]', '[ ]'],
+                 ['[ ]', '[ ]', '[ ]', '[ ]'],
+                 ['[ ]', '[ ]', '[ ]', '[ ]'],
                  ['[ ]', '[ ]', '[ ]', '[ ]']]
         actual_result3 = main.place_hero(coordinates3, board)
         self.assertEqual(expected_result3, actual_result3)
 
-        expected_result4 = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
-                           ['[ ]', '[ ]', '[ ]', '[x]']]
+        expected_result4 = [['[ ]', '[ ]', '[ ]', '[ ]'],
+                            ['[ ]', '[ ]', '[ ]', '[ ]'],
+                            ['[ ]', '[ ]', '[ ]', '[ ]'],
+                            ['[ ]', '[ ]', '[ ]', '[x]']]
 
-        board = [['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'], ['[ ]', '[ ]', '[ ]', '[ ]'],
+        board = [['[ ]', '[ ]', '[ ]', '[ ]'],
+                 ['[ ]', '[ ]', '[ ]', '[ ]'],
+                 ['[ ]', '[ ]', '[ ]', '[ ]'],
                  ['[ ]', '[ ]', '[ ]', '[ ]']]
         actual_result4 = main.place_hero(coordinates4, board)
         self.assertEqual(expected_result4, actual_result4)
@@ -110,7 +141,7 @@ class TestCases(unittest.TestCase):
         treasure_type = ''
         treasure_value = 2
 
-        expected_result_1 = ('',2)
+        expected_result_1 = ('', 2)
         expected_result_2 = 0
         actual_result_1 = game_functions.generate_treasure(chance, treasure_type, treasure_value, 15)
         actual_result_2 = game_functions.generate_treasure(chance, treasure_type, treasure_value, 50)
@@ -132,13 +163,12 @@ class TestCases(unittest.TestCase):
         actual_result = game_functions.treasure_sum(test_list)
         self.assertEqual(expected_result, actual_result)
 
-
     def test_clean_list(self):
 
-        test_list = [0, 0, (1,2), 0, (1,2)]
-        expected_result = [(1,2), (1,2)]
+        test_list = [0, 0, (1, 2), 0, (1, 2)]
+        expected_result = [(1, 2), (1, 2)]
         actual_result = game_functions.clean_list(test_list)
-        self.assertEqual(expected_result,actual_result)
+        self.assertEqual(expected_result, actual_result)
 
     def test_bubble_sort(self):
         class Creatures:
@@ -151,7 +181,7 @@ class TestCases(unittest.TestCase):
 
         tuple_list = [(creature_1, creature_1.initiative_dice_sum),
                       (creature_2, creature_2.initiative_dice_sum),
-                       (creature_3, creature_3.initiative_dice_sum)]
+                      (creature_3, creature_3.initiative_dice_sum)]
 
         character_list = [creature_1, creature_2, creature_3]
         expected_result = [(creature_2, 18), (creature_3, 16), (creature_1, 9)]
@@ -168,9 +198,9 @@ class TestCases(unittest.TestCase):
     def test_dice(self):
 
         number_of_dices = 2
-        possible_sums_ = [2,3,4,5,6,7,8,9,10,11,12]
+        possible_sums_ = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
         result = game_functions.dice(number_of_dices)
-        self.assertIn(result,possible_sums_)
+        self.assertIn(result, possible_sums_)
 
     # CLASS TEST
 
@@ -179,7 +209,6 @@ class TestCases(unittest.TestCase):
         test_character = classes.Hero('Orvar', 'Knight')
         expected_result = 0
         self.assertEqual(expected_result, test_character.initiative)
-
 
         test_character.add_knight()
         expected_result_1 = 5
@@ -190,7 +219,6 @@ class TestCases(unittest.TestCase):
         self.assertEqual(expected_result_2, test_character.resistance)
         self.assertEqual(expected_result_3, test_character.attack)
         self.assertEqual(expected_result_4, test_character.agility)
-
 
     def test_thief_initiation(self):
         test_character = classes.Hero('Orvar', 'Thief')
@@ -281,8 +309,6 @@ class TestCases(unittest.TestCase):
         self.assertEqual(expected_result_2, test_character.resistance)
         self.assertEqual(expected_result_3, test_character.attack)
         self.assertEqual(expected_result_4, test_character.agility)
-
-
 
     def test_update_player_coordinates(self):
 
@@ -387,7 +413,7 @@ class TestCases(unittest.TestCase):
 
         hero1 = classes.Hero('Orvar1', 'Riddare')
         hero_list = [hero1]
-        main.write_in_pickle_file(hero_list,'test_list.pickle')
+        main.write_in_pickle_file(hero_list, 'test_list.pickle')
         expected_result = hero1.name
 
         loaded_list = main.open_pickle_file('test_list.pickle')
@@ -410,6 +436,46 @@ class TestCases(unittest.TestCase):
 
         self.assertEqual(5, hero2.point)
 
+    def test_create_rooms(self):
+
+        expected_result1 = 9
+        room_list = main.create_rooms(3)
+        self.assertEqual(expected_result1, len(room_list))
+
+        expected_result2 = (0, 0)
+        expected_result3 = (2, 2)
+
+        room1 = room_list[0]
+        room2 = room_list[-1]
+
+        self.assertEqual(expected_result2, room1.coordinates)
+        self.assertEqual(expected_result3, room2.coordinates)
+
+    def test_return_hero(self):
+
+        expected_result1 = "Riddare"
+        expected_result2 = "Trollkarl"
+        expected_result3 = "Tjuv"
+
+        hero1 = main.return_hero('1', 'Orvar45')
+        hero2 = main.return_hero('2', 'Orvar45')
+        hero3 = main.return_hero('3', 'Orvar45')
+
+        self.assertEqual(expected_result1, hero1.hero_class)
+        self.assertEqual(expected_result2, hero2.hero_class)
+        self.assertEqual(expected_result3, hero3.hero_class)
+
+    def test_update_total_points(self):
+
+        hero = classes.Hero('Orvar', 'Riddare')
+        hero.points_current_game = 5
+        expected_result = 0
+        expected_result2 = 5
+        self.assertEqual(expected_result, hero.point)
+        hero.update_total_points()
+        self.assertEqual(expected_result2, hero.point)
+
 
 if __name__ == '__main__':
     unittest.main()
+    input()
