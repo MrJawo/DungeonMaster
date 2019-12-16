@@ -4,7 +4,6 @@ import main
 import time
 
 
-
 def number_sum(int_list):
     """Returns the sum of integers from a list"""
 
@@ -212,7 +211,7 @@ def dead_message(hero):
                 hero.heal_hero()
                 hero.nbr_of_games += 1
                 main.save_hero(hero)
-                main.main_menu()
+            main.main_menu()
         elif choice == "2":
             if not hero.ai:
                 save_collected_treasure(hero)
@@ -239,7 +238,7 @@ def delay_in_fight():
 def did_monster_die(monster, hero):
     """Checks if current monster died"""
 
-    if monster.resistance == 0:
+    if monster.resistance >= 0:
         killed_monster_counter(monster, hero)
         main.clear_screen()
         main.print_hero_stats(hero)
@@ -263,6 +262,7 @@ def check_for_living_monsters(room, game_board, hero, grid_size, room_list):
     if len(monsters_alive) == 0:
         room.monster_list = []
         room.set_room_symbol()
+        # TODO Sätt in room +1 counter här
         room.sum_of_treasures = 0
         main.print_board(game_board, hero)
 
@@ -284,7 +284,7 @@ def monster_attacks(knight_ability, creature, hero):
 
     if not knight_ability:
         attack_func(creature, hero, hero)
-        if hero.resistance == 0:
+        if hero.resistance <= 0:
             dead_message(hero)
         return False
     else:
@@ -481,6 +481,7 @@ def check_for_treasures(room,hero, game_board, monsters_in_room):
 
         room.treasure_list = []
         room.set_room_symbol()
+        # TODO Sätt in room +1 counter här
         if hero.ai:
             time.sleep(3)
     else:
@@ -492,6 +493,7 @@ def check_for_treasures(room,hero, game_board, monsters_in_room):
         if hero.ai:
             time.sleep(3)
         room.set_room_symbol()
+        # TODO Sätt in room +1 counter här
 
 
 def check_for_monsters(hero, grid_size, game_board, room_list, room):
@@ -555,12 +557,10 @@ def check_room(coordinates, room_list, hero, game_board, start_coordinates, grid
                         pass
 
                     main.clear_screen()
-
-
                     main.main_menu()
             elif room.symbol == "[.]":
                 main.print_board(game_board, hero)
-                if hero.ai:
+                if not hero.ai:
                     print('\nInga monster i rummet.')
                     print('Inga skatter hittades i rummet.')
 

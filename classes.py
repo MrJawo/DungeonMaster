@@ -82,8 +82,6 @@ class Hero(Creature):
         self.point = 0
 
 
-
-
 class Monster(Creature):
     def __init__(self):
         super().__init__()
