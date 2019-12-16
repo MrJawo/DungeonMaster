@@ -1,7 +1,8 @@
 import random
 import classes
 import main
-from time import sleep
+import time
+
 
 
 def number_sum(int_list):
@@ -169,7 +170,7 @@ def attack_func(attacker, defender, hero):
         defender.resistance -= 1
         print(f"\nAttack lyckades! {defender.name} har {defender.resistance} liv kvar.")
         if hero.ai:
-            sleep(2)
+            time.sleep(2.5)
         else:
             input('\n-- Tyck på enter för att fortsätta --')
 
@@ -180,14 +181,14 @@ def attack_func(attacker, defender, hero):
                     defender.resistance -= 1
                     print(f'\nKritisk träff! Dubbel skada utdelad, {defender.name} har {defender.resistance} liv kvar.')
                     if hero.ai:
-                        sleep(2)
+                        time.sleep(2.5)
                     else:
                         input('\n-- Tyck på enter för att fortsätta --')
 
     else:
         print(f"\nAttack misslyckades!")
         if hero.ai:
-            sleep(1)
+            time.sleep(1)
         else:
             input('\n-- Tyck på enter för att fortsätta --')
 
@@ -199,17 +200,25 @@ def dead_message(hero):
         main.clear_screen()
 
         print(f"\n{hero.name} har dött.")
-        save_collected_treasure(hero)
-        hero.heal_hero()
-        hero.nbr_of_games += 1
+        # TODO Sammanfattning av AI's spelrunda
 
         print("\n[1] - Main menu"
               "\n[2] - Avsluta spelet")
         choice = input("\nSkriv in ditt val: ")
 
         if choice == "1":
-            main.main_menu()
+            if not hero.ai:
+                save_collected_treasure(hero)
+                hero.heal_hero()
+                hero.nbr_of_games += 1
+                main.save_hero(hero)
+                main.main_menu()
         elif choice == "2":
+            if not hero.ai:
+                save_collected_treasure(hero)
+                hero.heal_hero()
+                hero.nbr_of_games += 1
+                main.save_hero(hero)
             exit()
         else:
             print("\n-- Felaktig input, ange en siffra från menyn. --")
@@ -220,11 +229,11 @@ def delay_in_fight():
     """Makes a 1,5 sec delay in action situations"""
 
     print('\n.')
-    sleep(0.5)
+    time.sleep(0.5)
     print('.')
-    sleep(0.5)
+    time.sleep(0.5)
     print('.')
-    sleep(0.5)
+    time.sleep(0.5)
 
 
 def did_monster_die(monster, hero):
@@ -237,7 +246,7 @@ def did_monster_die(monster, hero):
         print(f"\n{monster.name} dog!")
         monster.died()
         if hero.ai:
-            sleep(2)
+            time.sleep(2)
         else:
             input('\n-- Tryck på enter för att fortsätta --')
 
@@ -284,6 +293,8 @@ def monster_attacks(knight_ability, creature, hero):
         print(f"\n{hero.name} använder sköldblock och ignorerade attacken!")
         if hero.ai is False:
             input('\n-- Tryck på enter för att fortsätta --')
+        else:
+            time.sleep(2)
         return False
 
 
@@ -303,9 +314,6 @@ def escape_monster(hero):
 
 def hero_attack(hero, monster_list, current_monster, room, game_board, grid_size, room_list):
     """Heroes turn to attack"""
-
-    main.clear_screen()
-    main.print_hero_stats(hero)
 
     monster = monster_list[current_monster]
     if monster.resistance == 0:
@@ -354,7 +362,7 @@ def hero_flee(hero, game_board, monster_list, room, grid_size, room_list):
         hero.coordinates = hero.previous_coordinates
         main.place_hero(hero.coordinates, game_board)
         if hero.ai:
-            sleep(2)
+            time.sleep(2)
         else:
 
             input('\n-- Tryck på enter för att fortsätta --')
@@ -371,7 +379,7 @@ def hero_flee(hero, game_board, monster_list, room, grid_size, room_list):
     else:
         print(f'\n{hero.name} lyckades inte fly ')
         if hero.ai:
-            sleep(2)
+            time.sleep(2)
         else:
             input('\n-- Tryck på enter för att fortsätta --')
 
@@ -417,7 +425,7 @@ def set_turn_order(monster_list, hero):
         print(f"{i}. {creature.name}")
         i += 1
     if hero.ai:
-        sleep(2)
+        time.sleep(3)
     else:
         input('\n-- Tryck på enter för att fortsätta --')
     return creature_list
@@ -452,8 +460,8 @@ def check_for_treasures(room,hero, game_board, monsters_in_room):
     for treasure in room.treasure_list:
         t_sum += treasure[1]
     hero.points_current_game += t_sum
-
     main.print_board(game_board, hero)
+
 
     if len(room.treasure_list) > 0:
 
@@ -473,12 +481,16 @@ def check_for_treasures(room,hero, game_board, monsters_in_room):
 
         room.treasure_list = []
         room.set_room_symbol()
+        if hero.ai:
+            time.sleep(3)
     else:
         if not monsters_in_room:
             print('\nInga monster i rummet.')
         else:
             print('\nAlla monster besegrade.')
         print('Inga skatter hittades i rummet.')
+        if hero.ai:
+            time.sleep(3)
         room.set_room_symbol()
 
 
@@ -494,7 +506,7 @@ def check_for_monsters(hero, grid_size, game_board, room_list, room):
             i += 1
         start_fight_message(room.monster_list, hero)
         if hero.ai:
-            sleep(1)
+            time.sleep(3)
         else:
             input('\n-- Tryck på enter för att fortsätta --')
         fight(hero, grid_size, game_board, room_list, room)
@@ -514,11 +526,12 @@ def save_collected_treasure(hero):
     print(f"\n{hero.name} samlade på sig {hero.points_current_game} poäng.")
     hero.update_total_points()
     hero.points_current_game = 0
-    main.update_pickle_hero(hero, "hero_list.pickle")
+
     print(f"Totalt insamlat är {hero.point} poäng.")
     if hero.ai:
-        sleep(2)
+        time.sleep(2)
     else:
+        main.update_pickle_hero(hero, "hero_list.pickle")
         input('\n-- Tryck på enter för att fortsätta --')
 
 
@@ -533,11 +546,21 @@ def check_room(coordinates, room_list, hero, game_board, start_coordinates, grid
                 exit_to_menu = main.exit_map(game_board, (start_coordinates[0], start_coordinates[1]), hero)
                 if exit_to_menu:
                     main.clear_screen()
-                    hero.heal_hero()
-                    save_collected_treasure(hero)
+                    if not hero.ai:
+                        save_collected_treasure(hero)
+                        hero.heal_hero()
+                        hero.nbr_of_games += 1
+                    else:
+                        # TODO Sammanfattning av AI's spelrunda
+                        pass
+
+                    main.clear_screen()
+
+
                     main.main_menu()
             elif room.symbol == "[.]":
                 main.print_board(game_board, hero)
-                print('\nInga monster i rummet.')
-                print('Inga skatter hittades i rummet.')
+                if hero.ai:
+                    print('\nInga monster i rummet.')
+                    print('Inga skatter hittades i rummet.')
 

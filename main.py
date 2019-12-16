@@ -388,8 +388,6 @@ def ai_chosen_path(path,coordinates, grid_size,game_board):
             coordinates = (x, y)
             return [coordinates, old_coordinates]
 
-    print('efter ai chosen' ,coordinates,old_coordinates)
-
 
 def start_position(choice, grid_size, room_list, hero):
     """Returns the coordinates from the chosen start corner"""
@@ -657,7 +655,8 @@ def walk_on_board(hero, grid_size, game_board, room_list):
         hero.update_coordinates(current_coordinates)
         update_board(game_board, coordinates_list, hero.start_coordinates)
         print_board(game_board,hero)
-        time.sleep(1.5)
+        if hero.ai:
+            time.sleep(1)
         game_functions.check_room(current_coordinates, room_list, hero, game_board, hero.start_coordinates, grid_size)
 
 
@@ -748,6 +747,7 @@ def initiate_game(hero):
         time.sleep(1.5)
     walk_on_board(hero, grid_size, game_board, room_list)
 
+
 def main_menu_choice(menu_choice):
     """Handles main menu choice"""
 
@@ -756,7 +756,8 @@ def main_menu_choice(menu_choice):
             character_name = get_character_name()
             hero_choice = choose_character(character_name)
             hero = return_hero(hero_choice, character_name)
-            save_hero(hero)
+            if not hero.ai:
+                save_hero(hero)
             initiate_game(hero)
         elif menu_choice == "2":
             hero = load_hero()
@@ -785,7 +786,7 @@ def main_menu():
 
 
 if __name__ == '__main__':
-
+    #
     # start_list = []
     # with open("hero_list.pickle", "wb") as file:
     #     pickle.dump(start_list, file)
