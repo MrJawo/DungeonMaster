@@ -238,7 +238,7 @@ def delay_in_fight():
 def did_monster_die(monster, hero):
     """Checks if current monster died"""
 
-    if monster.resistance >= 0:
+    if monster.resistance <= 0:
         killed_monster_counter(monster, hero)
         main.clear_screen()
         main.print_hero_stats(hero)
@@ -316,7 +316,7 @@ def hero_attack(hero, monster_list, current_monster, room, game_board, grid_size
     """Heroes turn to attack"""
 
     monster = monster_list[current_monster]
-    if monster.resistance == 0:
+    if monster.resistance <= 0:
         try:
             current_monster += 1
             monster = monster_list[current_monster]
