@@ -352,7 +352,7 @@ def hero_flee(hero, game_board, monster_list, room, grid_size, room_list):
     print(f"\n{hero.name} Försöker att fly...")
     escape_try = escape_monster(hero)
     delay_in_fight()
-    if hero.ai == True and hero.escape_mode == True:
+    if hero.ai and hero.escape_mode == True:
         if escape_try:
             if hero.hero_class == "Trollkarl":
                 print("\nLjussken!")
@@ -592,8 +592,9 @@ def check_room(coordinates, room_list, hero, game_board, start_coordinates, grid
                     main.clear_screen()
                     main.main_menu()
             elif room.symbol == "[.]":
-                main.print_board(game_board, hero)
+
                 if not hero.ai:
+                    # main.print_board(game_board, hero)
                     print('\nInga monster i rummet.')
                     print('Inga skatter hittades i rummet.')
 

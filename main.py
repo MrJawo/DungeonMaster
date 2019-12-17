@@ -631,12 +631,12 @@ def exit_map(game_board, start_coordinates, hero):
 
     exit_choice = ''
 
-    while True:
-        if hero.ai and hero.escape_mode:
-            return '1'
-        elif hero.ai and not hero.escape_mode:
-            return '2'
+    if hero.ai and hero.escape_mode:
+        return True
+    elif hero.ai and not hero.escape_mode:
+        return False
 
+    while True:
         if not hero.ai:
             if game_board[start_coordinates[0]][start_coordinates[1]] == '[x]':
                 print("\nRummet innehåller en utgång\n\n"
@@ -684,10 +684,9 @@ def walk_on_board(hero, grid_size, game_board, room_list):
             hero.update_coordinates(current_coordinates)
             update_board(game_board, coordinates_list, hero.start_coordinates)
             print_board(game_board, hero)
-            time.sleep(1)
             game_functions.check_room(current_coordinates, room_list, hero, game_board, hero.start_coordinates,
                                       grid_size)
-            time.sleep(1)
+            time.sleep(0.1)
         else:
             coordinates_list = take_step(hero.coordinates, grid_size, hero, game_board)
             current_coordinates = coordinates_list[0]
