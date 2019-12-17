@@ -159,5 +159,5 @@ class Rooms:
 
     def remove_dead_monsters(self):
         for monster in self.monster_list:
-            if monster.resistance == 0:
+            if monster.resistance <= 0:
                 self.monster_list.remove(monster)

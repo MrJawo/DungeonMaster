@@ -140,13 +140,6 @@ def dice(number_of_dices):
 def hero_ability(hero):
     """Returns true or false if special ability works or not"""
 
-    if hero.hero_class == "Trollkarl":
-        wizard_num = 80
-        r1 = random.randint(1, 100)
-        if wizard_num >= r1:
-            return True
-        else:
-            return False
     if hero.hero_class == "Tjuv":
         thief_num = 25
         r2 = random.randint(1, 100)
@@ -210,14 +203,14 @@ def dead_message(hero):
                 save_collected_treasure(hero)
                 hero.heal_hero()
                 hero.nbr_of_games += 1
-                main.save_hero(hero)
+                main.update_pickle_hero(hero, 'hero_list.pickle')
             main.main_menu()
         elif choice == "2":
             if not hero.ai:
                 save_collected_treasure(hero)
                 hero.heal_hero()
                 hero.nbr_of_games += 1
-                main.save_hero(hero)
+                main.update_pickle_hero(hero, 'hero_list.pickle')
             exit()
         else:
             print("\n-- Felaktig input, ange en siffra från menyn. --")
