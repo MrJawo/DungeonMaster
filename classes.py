@@ -141,6 +141,7 @@ class Rooms:
         self.sum_of_treasures = 0
         self.symbol = "[ ]"
         self.exit = False
+        self.current_monster = 0
 
     def generate_room_content(self):
         self.monster_list = game_functions.get_monster_list()

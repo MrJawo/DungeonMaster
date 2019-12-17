@@ -618,8 +618,11 @@ def exit_map(game_board, start_coordinates, hero):
     while True:
         if hero.ai and hero.escape_mode:
             # TODO Skriv ut sammanfattning, vänta på enter, gå till menyn
-            print('')
-            pass
+            print('\nSAMMANFATTNING....')
+            input('press enter')
+            clear_screen()
+            main_menu()
+
         if game_board[start_coordinates[0]][start_coordinates[1]] == '[x]':
             print("\nRummet innehåller en utgång\n\n"
                             "[1] - Lämna kartan\n"

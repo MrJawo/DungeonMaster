@@ -89,6 +89,7 @@ def get_monster_list():
                     generate_monster(10, 'Orc', random.randint(1, 100)),
                     generate_monster(5, 'Troll', random.randint(1, 100))]
 
+
     monster_list = clean_list(monster_list)
     return monster_list
 
@@ -305,14 +306,14 @@ def escape_monster(hero):
         return False
 
 
-def hero_attack(hero, monster_list, current_monster, room, game_board, grid_size, room_list):
+def hero_attack(hero, monster_list, room, game_board, grid_size, room_list):
     """Heroes turn to attack"""
 
-    monster = monster_list[current_monster]
+    monster = monster_list[room.current_monster]
     if monster.resistance <= 0:
         try:
-            current_monster += 1
-            monster = monster_list[current_monster]
+            room.current_monster += 1
+            monster = monster_list[room.current_monster]
         except IndexError:
             check_for_living_monsters(room, game_board, hero, grid_size, room_list)
 
@@ -394,7 +395,7 @@ def hero_flee(hero, game_board, monster_list, room, grid_size, room_list):
             input('\n-- Tryck på enter för att fortsätta --')
 
 
-def heroes_turn(hero, monster_list, current_monster, room, game_board, grid_size, room_list):
+def heroes_turn(hero, monster_list, room, game_board, grid_size, room_list):
     while True:
         if hero.ai:
             if hero.resistance == 2 or hero.resistance == 1:
@@ -409,7 +410,7 @@ def heroes_turn(hero, monster_list, current_monster, room, game_board, grid_size
 
             menu_choice = input("\nSkriv in ditt val: ")
         if menu_choice == "1":
-            hero_attack(hero, monster_list, current_monster, room, game_board, grid_size, room_list)
+            hero_attack(hero, monster_list, room, game_board, grid_size, room_list)
             break
         elif menu_choice == "2":
             hero_flee(hero, game_board, monster_list, room, grid_size, room_list)
@@ -449,7 +450,6 @@ def fight(hero, grid_size, game_board, room_list, room):
         knight_ability = True
 
     monster_list = room.monster_list
-    current_monster = 0
     creature_list = set_turn_order(monster_list, hero)
 
     while True:
@@ -458,7 +458,7 @@ def fight(hero, grid_size, game_board, room_list, room):
                 if creature.name == hero.name:
                     main.clear_screen()
                     main.print_hero_stats(hero)
-                    heroes_turn(hero, monster_list, current_monster, room, game_board, grid_size, room_list)
+                    heroes_turn(hero, monster_list, room, game_board, grid_size, room_list)
                 else:
                     main.clear_screen()
                     main.print_hero_stats(hero)
@@ -472,7 +472,6 @@ def check_for_treasures(room,hero, game_board, monsters_in_room):
         t_sum += treasure[1]
     hero.points_current_game += t_sum
     main.print_board(game_board, hero)
-
 
     if len(room.treasure_list) > 0:
 
