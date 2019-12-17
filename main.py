@@ -610,6 +610,22 @@ def choose_character(character_name):
             input('-- Tyck på enter för att fortsätta --')
 
 
+def AI_summary(hero):
+    print("Antal besökta rum:", hero.room_count)
+    print("Totalt samlade skatter:", hero.points_current_game)
+    print('Jättespindlar dödade:', hero.giant_spider_kills)
+    print('Skelett dödade:', hero.skeleton_kills)
+    print('Orcer dödade:', hero.orc_kills)
+    print('Troll dödade:', hero.troll_kills)
+
+    monster_kill_sum = 0
+    monster_kill_sum += hero.giant_spider_kills
+    monster_kill_sum += hero.skeleton_kills
+    monster_kill_sum += hero.orc_kills
+    monster_kill_sum += hero.troll_kills
+
+    print("Totalt dödade monster:", monster_kill_sum, '\n')
+
 def exit_map(game_board, start_coordinates, hero):
     """Checks if user wants to leave the board"""
 
@@ -617,25 +633,24 @@ def exit_map(game_board, start_coordinates, hero):
 
     while True:
         if hero.ai and hero.escape_mode:
-            # TODO Skriv ut sammanfattning, vänta på enter, gå till menyn
-            print('\nSAMMANFATTNING....')
-            input('press enter')
-            clear_screen()
-            main_menu()
+            return '1'
+        elif hero.ai and not hero.escape_mode:
+            return '2'
 
-        if game_board[start_coordinates[0]][start_coordinates[1]] == '[x]':
-            print("\nRummet innehåller en utgång\n\n"
-                            "[1] - Lämna kartan\n"
-                            "[2] - Stanna kvar")
-            exit_choice = input("\nSkriv in ditt val: ")
-        if exit_choice == '1':
-            hero.nbr_of_games += 1
-            return True
-        elif exit_choice == '2':
-            return False
-        else:
-            error_message()
-            print_board(game_board, hero)
+        if not hero.ai:
+            if game_board[start_coordinates[0]][start_coordinates[1]] == '[x]':
+                print("\nRummet innehåller en utgång\n\n"
+                                "[1] - Lämna kartan\n"
+                                "[2] - Stanna kvar")
+                exit_choice = input("\nSkriv in ditt val: ")
+            if exit_choice == '1':
+                hero.nbr_of_games += 1
+                return True
+            elif exit_choice == '2':
+                return False
+            else:
+                error_message()
+                print_board(game_board, hero)
 
 
 def create_rooms(grid_size):

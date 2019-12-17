@@ -192,8 +192,14 @@ def dead_message(hero):
     while True:
         main.clear_screen()
 
-        print(f"\n{hero.name} har dött.")
-        # TODO Sammanfattning av AI's spelrunda
+        if hero.ai:
+            print("\nSAMMANFATTNING")
+            print("Äventyret avslutades genom att spelaren dog")
+            main.AI_summary(hero)
+            input('-- Tryck på enter för att fortsätta --')
+        else:
+            print(f"\n{hero.name} har dött.")
+
 
         print("\n[1] - Main menu"
               "\n[2] - Avsluta spelet")
@@ -255,12 +261,10 @@ def check_for_living_monsters(room, game_board, hero, grid_size, room_list):
 
     if len(monsters_alive) == 0:
         room.monster_list = []
-        room.set_room_symbol()
-        # TODO Sätt in room +1 counter här
         room.sum_of_treasures = 0
         main.print_board(game_board, hero)
 
-        check_for_treasures(room, hero, game_board, True)
+        check_for_treasures(room, hero, game_board, True, room_list, grid_size)
         main.walk_on_board(hero, grid_size, game_board, room_list)
 
 
@@ -465,7 +469,7 @@ def fight(hero, grid_size, game_board, room_list, room):
                     knight_ability = monster_attacks(knight_ability, creature, hero)
 
 
-def check_for_treasures(room,hero, game_board, monsters_in_room):
+def check_for_treasures(room,hero, game_board, monsters_in_room, room_list, grid_size):
 
     t_sum = 0
     for treasure in room.treasure_list:
@@ -491,7 +495,10 @@ def check_for_treasures(room,hero, game_board, monsters_in_room):
 
         room.treasure_list = []
         room.set_room_symbol()
-        # TODO Sätt in room +1 counter här
+
+        all_rooms_cleared(room_list, grid_size, hero)
+        hero.room_count += 1
+
         if hero.ai:
             time.sleep(3)
     else:
@@ -503,7 +510,8 @@ def check_for_treasures(room,hero, game_board, monsters_in_room):
         if hero.ai:
             time.sleep(3)
         room.set_room_symbol()
-        # TODO Sätt in room +1 counter här
+        all_rooms_cleared(room_list, grid_size, hero)
+        hero.room_count += 1
 
 
 def check_for_monsters(hero, grid_size, game_board, room_list, room):
@@ -529,7 +537,7 @@ def check_for_monsters(hero, grid_size, game_board, room_list, room):
 def undiscovered_room(room, hero, room_list, game_board, grid_size):
 
     monsters_in_room = check_for_monsters(hero, grid_size, game_board, room_list, room)
-    check_for_treasures(room, hero, game_board, monsters_in_room)
+    check_for_treasures(room, hero, game_board, monsters_in_room, room_list, grid_size)
 
 
 def save_collected_treasure(hero):
@@ -547,6 +555,20 @@ def save_collected_treasure(hero):
         input('\n-- Tryck på enter för att fortsätta --')
 
 
+def all_rooms_cleared(room_list, grid_size, hero):
+    counter = 0
+    for room in room_list:
+        if room.symbol == "[.]":
+            counter += 1
+
+    number = (grid_size * grid_size)-1
+    if counter == number:
+        hero.escape_mode = True
+        hero.way_out_coordinates.reverse()
+        hero.way_out_coordinates.append(hero.start_coordinates)
+        hero.way_out_coordinates.pop(0)
+
+
 def check_room(coordinates, room_list, hero, game_board, start_coordinates, grid_size):
 
     for room in room_list:
@@ -555,8 +577,7 @@ def check_room(coordinates, room_list, hero, game_board, start_coordinates, grid
                 undiscovered_room(room, hero, room_list, game_board, grid_size)
             elif room.symbol == "[O]":
                 main.print_board(game_board, hero)
-                if hero.ai and hero.escape_mode:
-                    exit_to_menu = main.exit_map(game_board, (start_coordinates[0], start_coordinates[1]), hero)
+                exit_to_menu = main.exit_map(game_board, (start_coordinates[0], start_coordinates[1]), hero)
                 if exit_to_menu:
                     main.clear_screen()
                     if not hero.ai:
@@ -564,9 +585,10 @@ def check_room(coordinates, room_list, hero, game_board, start_coordinates, grid
                         hero.heal_hero()
                         hero.nbr_of_games += 1
                     else:
-                        # TODO Sammanfattning av AI's spelrunda
-                        pass
-
+                        print("\nSAMMANFATTNING")
+                        print("Äventyret avslutades genom att spelaren lämnade kartan")
+                        main.AI_summary(hero)
+                        input('-- Tryck på enter för att fortsätta --')
                     main.clear_screen()
                     main.main_menu()
             elif room.symbol == "[.]":

@@ -40,6 +40,7 @@ class Hero(Creature):
         self.skeleton_kills = 0
         self.escape_mode = False
         self.way_out_coordinates = []
+        self.room_count = 0
 
     def heal_hero(self):
         if self.hero_class == "Riddare":
