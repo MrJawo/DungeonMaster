@@ -347,11 +347,28 @@ def hero_flee(hero, game_board, monster_list, room, grid_size, room_list):
     print(f"\n{hero.name} Försöker att fly...")
     escape_try = escape_monster(hero)
     delay_in_fight()
-    if escape_try:
+    if hero.ai == True and hero.escape_mode == True:
+        if escape_try:
+            if hero.hero_class == "Trollkarl":
+                print("\nLjussken!")
+            hero.way_out_coordinates.reverse()
+            hero.way_out_coordinates.append(hero.start_coordinates)
+            hero.way_out_coordinates.pop(0)
+            print('\nDu lyckades fly från monstret')
+            game_board[hero.coordinates[0]][hero.coordinates[1]] = '[ ]'
+            time.sleep(2)
+            main.walk_on_board(hero, grid_size, game_board, room_list)
+        else:
+            print(f'\n{hero.name} lyckades inte fly ')
+        if hero.ai:
+            time.sleep(2)
+    elif escape_try:
+
         if hero.hero_class == "Trollkarl":
             print("\nLjussken!")
+
         print('\nDu lyckades fly från monstret')
-        game_board[hero.coordinates[0]][hero.coordinates[1]] = '[ ]'
+        game_board[hero.coordinates[0]][hero.coordinates[1]] = '[-]'
         hero.coordinates = hero.previous_coordinates
         main.place_hero(hero.coordinates, game_board)
         if hero.ai:
@@ -380,8 +397,9 @@ def hero_flee(hero, game_board, monster_list, room, grid_size, room_list):
 def heroes_turn(hero, monster_list, current_monster, room, game_board, grid_size, room_list):
     while True:
         if hero.ai:
-            if hero.resistance is 1:
+            if hero.resistance == 2 or hero.resistance == 1:
                 menu_choice = '2'
+                hero.escape_mode = True
             else:
                 menu_choice = '1'
         else:
@@ -538,7 +556,8 @@ def check_room(coordinates, room_list, hero, game_board, start_coordinates, grid
                 undiscovered_room(room, hero, room_list, game_board, grid_size)
             elif room.symbol == "[O]":
                 main.print_board(game_board, hero)
-                exit_to_menu = main.exit_map(game_board, (start_coordinates[0], start_coordinates[1]), hero)
+                if hero.ai and hero.escape_mode:
+                    exit_to_menu = main.exit_map(game_board, (start_coordinates[0], start_coordinates[1]), hero)
                 if exit_to_menu:
                     main.clear_screen()
                     if not hero.ai:

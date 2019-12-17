@@ -38,6 +38,8 @@ class Hero(Creature):
         self.troll_kills = 0
         self.orc_kills = 0
         self.skeleton_kills = 0
+        self.escape_mode = False
+        self.way_out_coordinates = []
 
     def heal_hero(self):
         if self.hero_class == "Riddare":

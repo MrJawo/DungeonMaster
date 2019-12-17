@@ -114,7 +114,6 @@ def ai_choose_path():
     return path
 
 
-
 def ai_chosen_path(path,coordinates, grid_size,game_board):
     old_coordinates = coordinates
     x, y = coordinates
@@ -617,6 +616,10 @@ def exit_map(game_board, start_coordinates, hero):
     exit_choice = ''
 
     while True:
+        if hero.ai and hero.escape_mode:
+            # TODO Skriv ut sammanfattning, vänta på enter, gå till menyn
+            print('')
+            pass
         if game_board[start_coordinates[0]][start_coordinates[1]] == '[x]':
             print("\nRummet innehåller en utgång\n\n"
                             "[1] - Lämna kartan\n"
@@ -646,18 +649,37 @@ def create_rooms(grid_size):
     return room_list
 
 
+def escape_board(hero):
+    old_coordinates = hero.coordinates
+    coordinates = hero.way_out_coordinates[0]
+    hero.way_out_coordinates.pop(0)
+    return [coordinates, old_coordinates]
+
+
 def walk_on_board(hero, grid_size, game_board, room_list):
     """Makes user walk on board"""
 
     while True:
-        coordinates_list = take_step(hero.coordinates, grid_size, hero, game_board)
-        current_coordinates = coordinates_list[0]
-        hero.update_coordinates(current_coordinates)
-        update_board(game_board, coordinates_list, hero.start_coordinates)
-        print_board(game_board,hero)
-        if hero.ai:
+        if hero.ai and hero.escape_mode:
+            coordinates_list = escape_board(hero)
+            current_coordinates = coordinates_list[0]
+            hero.update_coordinates(current_coordinates)
+            update_board(game_board, coordinates_list, hero.start_coordinates)
+            print_board(game_board, hero)
             time.sleep(1)
-        game_functions.check_room(current_coordinates, room_list, hero, game_board, hero.start_coordinates, grid_size)
+            game_functions.check_room(current_coordinates, room_list, hero, game_board, hero.start_coordinates,
+                                      grid_size)
+            time.sleep(1)
+        else:
+            coordinates_list = take_step(hero.coordinates, grid_size, hero, game_board)
+            current_coordinates = coordinates_list[0]
+            hero.way_out_coordinates.append(current_coordinates)
+            hero.update_coordinates(current_coordinates)
+            update_board(game_board, coordinates_list, hero.start_coordinates)
+            print_board(game_board,hero)
+            if hero.ai:
+                time.sleep(1)
+            game_functions.check_room(current_coordinates, room_list, hero, game_board, hero.start_coordinates, grid_size)
 
 
 def open_pickle_file(path):
@@ -786,9 +808,9 @@ def main_menu():
 
 
 if __name__ == '__main__':
-    #
-    # start_list = []
-    # with open("hero_list.pickle", "wb") as file:
-    #     pickle.dump(start_list, file)
+
+    start_list = []
+    with open("hero_list.pickle", "wb") as file:
+        pickle.dump(start_list, file)
     while True:
         main_menu()
